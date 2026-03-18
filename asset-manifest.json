@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/react-login-ui/static/css/main.84c38ddc.css",
-    "main.js": "/react-login-ui/static/js/main.cd215d1a.js",
-    "static/js/453.8f9d3522.chunk.js": "/react-login-ui/static/js/453.8f9d3522.chunk.js",
-    "index.html": "/react-login-ui/index.html",
-    "main.84c38ddc.css.map": "/react-login-ui/static/css/main.84c38ddc.css.map",
-    "main.cd215d1a.js.map": "/react-login-ui/static/js/main.cd215d1a.js.map",
-    "453.8f9d3522.chunk.js.map": "/react-login-ui/static/js/453.8f9d3522.chunk.js.map"
+    "main.css": "./static/css/main.65d31ccb.css",
+    "main.js": "./static/js/main.42370c13.js",
+    "static/js/453.8f9d3522.chunk.js": "./static/js/453.8f9d3522.chunk.js",
+    "index.html": "./index.html",
+    "main.65d31ccb.css.map": "./static/css/main.65d31ccb.css.map",
+    "main.42370c13.js.map": "./static/js/main.42370c13.js.map",
+    "453.8f9d3522.chunk.js.map": "./static/js/453.8f9d3522.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.84c38ddc.css",
-    "static/js/main.cd215d1a.js"
+    "static/css/main.65d31ccb.css",
+    "static/js/main.42370c13.js"
   ]
 }
