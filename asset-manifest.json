@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/sahana-crnr/react-login-ui/static/css/main.84c38ddc.css",
-    "main.js": "/sahana-crnr/react-login-ui/static/js/main.b5168c7c.js",
-    "static/js/453.8f9d3522.chunk.js": "/sahana-crnr/react-login-ui/static/js/453.8f9d3522.chunk.js",
-    "index.html": "/sahana-crnr/react-login-ui/index.html",
-    "main.84c38ddc.css.map": "/sahana-crnr/react-login-ui/static/css/main.84c38ddc.css.map",
-    "main.b5168c7c.js.map": "/sahana-crnr/react-login-ui/static/js/main.b5168c7c.js.map",
-    "453.8f9d3522.chunk.js.map": "/sahana-crnr/react-login-ui/static/js/453.8f9d3522.chunk.js.map"
+    "main.css": "/react-login-ui/static/css/main.84c38ddc.css",
+    "main.js": "/react-login-ui/static/js/main.cd215d1a.js",
+    "static/js/453.8f9d3522.chunk.js": "/react-login-ui/static/js/453.8f9d3522.chunk.js",
+    "index.html": "/react-login-ui/index.html",
+    "main.84c38ddc.css.map": "/react-login-ui/static/css/main.84c38ddc.css.map",
+    "main.cd215d1a.js.map": "/react-login-ui/static/js/main.cd215d1a.js.map",
+    "453.8f9d3522.chunk.js.map": "/react-login-ui/static/js/453.8f9d3522.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.84c38ddc.css",
-    "static/js/main.b5168c7c.js"
+    "static/js/main.cd215d1a.js"
   ]
 }
