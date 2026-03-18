@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "name": "Product 1",
+        "details": "High quality  product 1 with great features."
+    },
+    {
+        "id": 2,
+        "name": "Product 2",
+        "details": "Best product 2 offering excellent value."
+    },
+    {
+        "id": 3,
+        "name": "Product 3",
+        "details": "Product 3 for all your advanced needs."
+    },
+    {
+        "id": 4,
+        "name": "Product 4",
+        "details": "Product 4 for your best moments."
+    },
+    {
+        "id": 5,
+        "name": "Product 5",
+        "details": "Product 5 for all your premium needs."
+    }
+]
