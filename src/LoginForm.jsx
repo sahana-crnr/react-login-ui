@@ -14,7 +14,7 @@ export default function LoginForm() {
     const handleLogin = (e) => {
         e.preventDefault();
 
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailPattern.test(email)) {
             toast.error("Please enter a valid email address.");
             return;
@@ -26,7 +26,7 @@ export default function LoginForm() {
         }
 
         toast.success("You are logged in successfully!", { duration: 5000 });
-        navigate("/home");
+        navigate("home");
     };
 
     return (

@@ -1,27 +1,74 @@
 [
     {
         "id": 1,
-        "name": "Product 1",
-        "details": "High quality  product 1 with great features."
+        "name": "Nike Downshifter Running Shoes",
+        "size": "EU42",
+        "color": "Black/White",
+        "description": "Lightweight running shoes designed for everyday comfort and durability.",
+        "price": 4295,
+        "image": "https://tse3.mm.bing.net/th/id/OIP.K0z906WV6qeItDZNkXoV5QHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
     },
     {
         "id": 2,
-        "name": "Product 2",
-        "details": "Best product 2 offering excellent value."
+        "name": "Red Tape Casual Sneakers",
+        "size": "EU41",
+        "color": "White/Blue",
+        "description": "Stylish everyday sneakers suitable for casual outings and daily wear.",
+        "price": 1275,
+        "image": "https://th.bing.com/th/id/OIP.WpYUFqewyyUpf6sH_PDHzQHaHX?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3"
     },
     {
         "id": 3,
-        "name": "Product 3",
-        "details": "Product 3 for all your advanced needs."
+        "name": "boAt Rockerz Wireless Headphones",
+        "size": "Standard",
+        "color": "Black",
+        "description": "Bluetooth headphones with immersive sound and long battery life.",
+        "price": 979,
+        "image": "https://th.bing.com/th/id/OIP.sWH0-IoaP9ZCfW1JxD_S2gHaHa?w=186&h=186&c=7&r=0&o=7&dpr=1.1&pid=1.7&rm=3"
     },
     {
         "id": 4,
-        "name": "Product 4",
-        "details": "Product 4 for your best moments."
+        "name": "Fastrack Smartwatch",
+        "size": "44mm",
+        "color": "Black",
+        "description": "Smartwatch with fitness tracking, heart rate monitoring and notifications.",
+        "price": 3499,
+        "image": "https://th.bing.com/th/id/OIP.-sPimip3taRcx0v9dXlkJgHaHa?w=160&h=180&c=7&r=0&o=7&dpr=1.1&pid=1.7&rm=3"
     },
     {
         "id": 5,
-        "name": "Product 5",
-        "details": "Product 5 for all your premium needs."
+        "name": "Gear Laptop Backpack",
+        "size": "30L",
+        "color": "Grey",
+        "description": "Durable laptop backpack with multiple compartments and water resistant fabric.",
+        "price": 985,
+        "image": "https://media.landmarkshops.in/cdn-cgi/image/h=831,w=615,q=85,fit=cover/max-new/1000014975093-Black-BLACK-1000014975093_01-2100.jpg"
+    },
+    {
+        "id": 6,
+        "name": "boAt Stone Bluetooth Speaker",
+        "size": "Portable",
+        "color": "Blue",
+        "description": "Compact Bluetooth speaker with deep bass and long battery backup.",
+        "price": 1349,
+        "image": "https://th.bing.com/th/id/OIP.eqNdjBXuFzcufzfPd1ejywHaHa?w=176&h=180&c=7&r=0&o=7&dpr=1.1&pid=1.7&rm=3"
+    },
+    {
+        "id": 7,
+        "name": "Gaming Mouse RGB",
+        "size": "Standard",
+        "color": "Black",
+        "description": "High precision gaming mouse with RGB lighting and adjustable DPI.",
+        "price": 699,
+        "image": "https://th.bing.com/th/id/OIP.ULo13wd_79Yp--UyEDTWqQHaHD?w=202&h=192&c=7&r=0&o=7&dpr=1.1&pid=1.7&rm=3"
+    },
+    {
+        "id": 8,
+        "name": "Nike Air Max",
+        "size": "EU40",
+        "color": "Black/Red",
+        "description": "Classic Nike Air Max sneakers with comfortable cushioning and stylish design.",
+        "price": 1999,
+        "image": "https://sneakernews.com/wp-content/uploads/2023/02/Nike-Air-Max-90-Grey-FJ4218-002-3.jpg"
     }
 ]
