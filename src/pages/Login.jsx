@@ -14,6 +14,7 @@ const loginSchema = z.object({
         .email({ message: "Invalid email address" }),
     password: z
         .string()
+        .min(1, { message: "Password is required" })
         .min(6, { message: "Password must be at least 6 characters long" })
 });
 
@@ -59,7 +60,7 @@ export default function Login() {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
             <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-100 relative">
-                <h2 className="text-3xl font-extrabold text-center text-purple-700 mb-6">Login</h2>
+                <h2 className="text-3xl font-bold text-center text-purple-900 mb-3">Login</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 

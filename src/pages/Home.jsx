@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import products from "../pages/products.json";
 import ProductCard from "../components/ProductCard";
-import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaSearch, FaShoppingCart, FaSignOutAlt } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        navigate("/");
+    };
 
     const filteredProducts = products.filter(
         (product) =>
@@ -17,10 +24,12 @@ export default function Home() {
         <div className="  bg-gray-100 min-h-screen bg-gray-50 flex flex-col">
 
             {/* Header Navigation */}
-            <header className="bg-white shadow-md py-4 px-6 md:px-10 sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="text-3xl font-extrabold text-purple-700 tracking-wide shrink-0">
-                        ShopZone
+            <header className="bg-white shadow-md py-4 px-6 md:px-8 sticky top-0 z-50">
+                <div className="max-w-8xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="text-3xl font-extrabold text-purple-700 tracking-wide shrink-0">
+                            ShopZone
+                        </div>
                     </div>
 
                     <div className="relative w-full md:max-w-md lg:max-w-lg flex-1">
@@ -42,17 +51,22 @@ export default function Home() {
                             <Link to="/products" className="hover:text-purple-600 transition">Products</Link>
                             <Link to="/about" className="hover:text-purple-600 transition">About Us</Link>
                         </nav>
-                        <button className="bg-purple-600 text-white px-5 py-2 rounded-2xl text-sm font-semibold hover:bg-purple-800 transition shadow-md whitespace-nowrap">
-                            Cart (0)
-                        </button>
+                        <div className="flex gap-2">
+                            <button className="bg-purple-600 text-white px-3 py-1 md:px-4 md:py-2 rounded-2xl text-md hover:bg-purple-800 transition">
+                                <FaShoppingCart />
+                            </button>
+                            <button onClick={handleLogout} title="Logout" className="bg-purple-600 text-white px-3 py-1 md:px-4 md:py-2 rounded-2xl text-md hover:bg-purple-800 transition">
+                                <FaSignOutAlt />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
 
             {/* Main Content Area */}
-            <main className="flex-1 p-4 md:p-8.5 max-w-7xl mx-auto w-full">
+            <main className="flex-1 p-4 md:p-8 max-w-8xl mx-auto w-full">
                 <div className="flex justify-between items-end mb-8">
-                    <h1 className="text-2xl md:text-4xl font-extrabold text-gray-800">
+                    <h1 className="text-2xl md:text-2xl font-bold text-gray-800">
                         Product Collection
                     </h1>
                     <p className="hidden sm:block text-gray-500 font-medium">{filteredProducts.length} Items</p>
@@ -61,7 +75,7 @@ export default function Home() {
                 {filteredProducts.length === 0 ? (
                     <div className="text-center text-gray-500 text-lg py-20">No products found.</div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                         {filteredProducts.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
@@ -89,8 +103,8 @@ export default function Home() {
                         <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
                         <p className="text-gray-400 text-sm mb-4">Subscribe to get special offers and updates.</p>
                         <div className="flex justify-center md:justify-start">
-                            <input type="email" placeholder="Enter your email" className="px-4 py-2 rounded-l-md w-full md:w-auto text-gray-900 outline-none focus:ring-2 focus:ring-purple-500" />
-                            <button className="bg-purple-600 px-4 py-2 rounded-r-md hover:bg-purple-700 transition">Subscribe</button>
+                            <input type="email" placeholder="Enter your email" className="px-4 py-2 rounded-l-2xl w-full md:w-auto text-gray-900 outline-none focus:ring-2 focus:ring-purple-500" />
+                            <button className="bg-purple-600 text-white px-4 py-2 rounded-r-2xl hover:bg-purple-800 transition">Subscribe</button>
                         </div>
                     </div>
                 </div>
