@@ -1,0 +1,187 @@
+/* Sidebar.css */
+
+.hamburger-icon {
+    cursor: pointer;
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    transition: color 0.2s ease;
+}
+
+.hamburger-icon:hover {
+    color: #007bff;
+    /* Change to your brand primary color */
+}
+
+/* Dark Background Overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Sidebar Body */
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    /* Hidden off-screen initially */
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    transition: left 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.sidebar-container.open {
+    left: 0;
+    /* Slides into view */
+}
+
+/* Header */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    /* Light grey header */
+    border-bottom: 1px solid #eaeaea;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #3c0355;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.close-btn:hover {
+    color: #c60202;
+    /* Red hover for close button */
+}
+
+/* Menu Content */
+.sidebar-content {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: #4a4a4a;
+    font-size: 1rem;
+}
+
+.sidebar-item:hover {
+    background-color: #f0f4f8;
+    color: #9500ff;
+    /* Change to your brand primary color */
+}
+
+.item-icon {
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.item-label {
+    flex-grow: 1;
+}
+
+.chevron {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.chevron.rotated {
+    transform: rotate(180deg);
+}
+
+/* Categories Dropdown */
+.categories-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background-color: #fafafa;
+}
+
+.categories-list.expanded {
+    max-height: 300px;
+    /* Adjust based on list size */
+}
+
+.categories-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.categories-list li {
+    padding: 12px 20px 12px 50px;
+    /* Indented padding */
+    font-size: 0.95rem;
+    color: #555;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f1f1;
+    transition: color 0.2s;
+}
+
+.categories-list li:hover {
+    color: #aa00ff;
+}
+
+/* Divider & Sections */
+.divider {
+    border: none;
+    height: 1px;
+    background-color: #eaeaea;
+    margin: 15px 0;
+}
+
+.section-title {
+    padding: 0 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #999;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+/* Specific styling for Sign Out */
+.sign-out:hover {
+    background-color: #fdf2f2;
+    color: #d9534f;
+}

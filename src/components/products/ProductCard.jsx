@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeart, FaRegHeart, FaShareAlt } from "react-icons/fa";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import toast from "react-hot-toast";
@@ -9,7 +8,6 @@ function ProductCard({ product }) {
     const navigate = useNavigate();
     const originalPrice = product.originalPrice || Math.round(product.price * 1.35);
     const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
-
 
     const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -40,34 +38,41 @@ function ProductCard({ product }) {
         window.dispatchEvent(new Event('wishlistUpdated'));
     };
 
-    const handleShare = (e) => {
+    const handleShare = async (e) => {
         e.stopPropagation();
         const productUrl = `${window.location.origin}/product/${product.id}`;
-        navigator.clipboard.writeText(productUrl);
-        toast.success("Product link copied to clipboard!");
+
+        const shareData = {
+            title: product.name,
+            text: `Check out ${product.name} at ShopZone!`,
+            url: productUrl,
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.error("Error sharing:", err);
+            }
+        } else {
+            // Fallback for browsers that don't support native share
+            navigator.clipboard.writeText(productUrl);
+            toast.success("Product link copied to clipboard!");
+        }
     };
 
     return (
         <div onClick={() => navigate(`/product/${product.id}`)} className="relative bg-white rounded-2xl shadow-lg w-full overflow-hidden hover:scale-105 transition flex flex-col gap-4 cursor-pointer">
 
-            <button
-                onClick={handleWishlist}
-                className="absolute bg-white rounded-full shadow-md text-gray-600 hover:text-red-500 hover:bg-gray-100 transition-colors flex items-center justify-center"
-                title="Wishlist"
-                style={{ top: '12px', left: '12px', width: '36px', height: '36px', zIndex: 20 }}
-            >
-                {isWishlisted ? <FaHeart className="text-red-500 text-lg" /> : <FaRegHeart className="text-lg" />}
-            </button>
+            <div className="absolute flex flex-col gap-3" style={{ top: '14px', right: '20px', zIndex: 20 }}>
+                <button onClick={handleWishlist} className="text-gray-200 hover:text-red-500 transition-colors" title="Wishlist">
+                    {isWishlisted ? <FaHeart className="text-red-600 text-xl" /> : <FaRegHeart className="text-lg drop-shadow-sm" />}
+                </button>
 
-            <button
-                onClick={handleShare}
-                className="absolute bg-white rounded-full shadow-md text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-colors flex items-center justify-center"
-                title="Share"
-                style={{ top: '12px', right: '12px', width: '36px', height: '36px', zIndex: 20 }}
-            >
-                <FaShareAlt className="text-lg" />
-                <FiShare2 className="text-lg" />
-            </button>
+                <button onClick={handleShare} className="text-gray-200 hover:text-blue-400 transition-colors" title="Share">
+                    <FiShare2 className="text-lg drop-shadow-sm" />
+                </button>
+            </div>
 
             <div className="flex justify-center p-4 bg-purple-900" style={{
                 backgroundImage: `
@@ -76,13 +81,14 @@ function ProductCard({ product }) {
     `, backgroundBlendMode: 'overlay'
             }}>
                 <img
-                    src={product.image}
+                    src={product.image?.startsWith('/') ? process.env.PUBLIC_URL + product.image : product.image}
                     alt={product.name}
                     className="w-full h-48 object-contain"
                 />
             </div>
 
-            <div className="bg-white relative z-10 -mt-8 border px-2 py-1 rounded-2xl p-4 flex-col flex-1 gap-9">
+            <div className="bg-white relative z-10 -mt-8 border px-4
+             py-4 rounded-2xl p-4 flex-col flex-1">
 
                 <h2 className="text-sm md:text-lg font-bold">
                     {product.name}
@@ -98,10 +104,11 @@ function ProductCard({ product }) {
                 </p>
 
                 <div className="flex justify-between items-center mt-auto pt-4">
+                    <div className="flex items-baseline gap-2">
                         <span className="text-sm text-gray-500 line-through">₹ {product.originalPrice}</span>
-                        <p className="font-bold">Rs.{product.price}</p>
-                        <span className="text-sm text-green-600 font-bold">{product.discount}% off</span>
-                    
+                        <span className="text-md font-bold">₹ {product.price}</span>
+                    </div>
+                    <span className="text-sm text-green-600 font-bold">{discount}% off</span>
                 </div>
 
             </div>
