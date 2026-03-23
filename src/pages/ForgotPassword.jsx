@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import toast from "react-hot-toast";
 import Button from "../components/common/Button";
+import useAuthStore from "../store/useAuthStore";
 
 // 1. Define the validation schema for the email
 const forgotPasswordSchema = z.object({
@@ -16,6 +17,7 @@ const forgotPasswordSchema = z.object({
 
 export default function ForgotPassword() {
     const navigate = useNavigate();
+    const checkEmailExists = useAuthStore(state => state.checkEmailExists);
 
     // 2. Initialize react-hook-form
     const {
@@ -31,9 +33,7 @@ export default function ForgotPassword() {
     const onSubmit = async (data) => {
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        // Check if the email exists in local storage
-        const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-        const userExists = existingUsers.some(u => u.email === data.email);
+        const userExists = checkEmailExists(data.email);
 
         if (!userExists) {
             toast.error("Email not registered.");
@@ -56,10 +56,12 @@ export default function ForgotPassword() {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                        <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
                         <input
+                            id="email"
                             type="email"
                             {...register("email")}
+                            autoComplete="email"
                             className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${errors.email ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-purple-500"}`}
                             placeholder="Enter your email"
                         />

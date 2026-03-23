@@ -3,10 +3,12 @@ import { FaSearch, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import useAuthStore from "../../store/useAuthStore";
 
 export default function Header({ searchTerm, setSearchTerm }) {
     const navigate = useNavigate();
     const [cartCount, setCartCount] = useState(0);
+    const logoutUser = useAuthStore(state => state.logoutUser);
 
     // Check and update cart count when component mounts or event fires
     useEffect(() => {
@@ -21,10 +23,7 @@ export default function Header({ searchTerm, setSearchTerm }) {
     }, []);
 
     const handleLogout = () => {
-        // Remove only the specific session keys to avoid deleting registered accounts.
-        // Note: Change "currentUser" and "isLoggedIn" to the exact keys you set in your Login.jsx!
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("isLoggedIn");
+        logoutUser();
         sessionStorage.clear();
         navigate("/");
     };
@@ -44,11 +43,15 @@ export default function Header({ searchTerm, setSearchTerm }) {
                         <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
                             <FaSearch />
                         </span>
+                        <label htmlFor="search" className="sr-only">Search products</label>
                         <input
+                            id="search"
+                            name="search"
                             type="text"
                             placeholder="Search products..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            autoComplete="off"
                             className="w-full px-4 py-2 pl-11 pr-10 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
                         {searchTerm && (

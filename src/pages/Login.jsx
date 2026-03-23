@@ -6,6 +6,7 @@ import * as z from "zod";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import Button from "../components/common/Button";
+import useAuthStore from "../store/useAuthStore";
 
 // 1. Define the validation schema for login
 const loginSchema = z.object({
@@ -22,6 +23,7 @@ const loginSchema = z.object({
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const loginUser = useAuthStore(state => state.loginUser);
 
     // 2. Initialize react-hook-form with the Zod resolver
     const {
@@ -37,22 +39,15 @@ export default function Login() {
     const onSubmit = async (data) => {
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        // Fetch registered users from local storage
-        const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-        const user = existingUsers.find(u => u.email === data.email);
+        const result = loginUser(data.email, data.password);
 
-        if (!user) {
-            toast.error("Email not registered. Please sign up.");
-            setError("email", { type: "manual", message: "Email not registered. Please sign up." });
-            return;
-        }
-        if (user.password !== data.password) {
-            toast.error("Incorrect password.");
-            setError("password", { type: "manual", message: "Incorrect password." });
+        if (!result.success) {
+            toast.error(result.message);
+            setError(result.field, { type: "manual", message: result.message });
             return;
         }
 
-        toast.success("You are logged in successfully!", { duration: 5000 });
+        toast.success(result.message, { duration: 5000 });
         console.log("Login submitted successfully:", data);
         // Redirect to the Home page after successful submission
         navigate("/home");
@@ -67,10 +62,12 @@ export default function Login() {
 
                     {/* Email Field */}
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                        <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
                         <input
+                            id="email"
                             type="email"
                             {...register("email")}
+                            autoComplete="email"
                             className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${errors.email ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-purple-500"
                                 }`}
                             placeholder="Enter your email"
@@ -82,11 +79,13 @@ export default function Login() {
 
                     {/* Password Field */}
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                        <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
                         <div className="relative">
                             <input
+                                id="password"
                                 type={showPassword ? 'text' : 'password'}
                                 {...register("password")}
+                                autoComplete="current-password"
                                 className={`w-full px-4 py-2 pr-10 border rounded-xl focus:outline-none focus:ring-2 transition-all ${errors.password ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-purple-500"}`}
                                 placeholder="Enter your password"
                             />
@@ -104,8 +103,8 @@ export default function Login() {
                     </div>
 
                     <div className="flex justify-between items-center text-sm">
-                        <label className="flex items-center space-x-2 text-gray-600 cursor-pointer">
-                            <input type="checkbox" className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                        <label htmlFor="rememberMe" className="flex items-center space-x-2 text-gray-600 cursor-pointer">
+                            <input id="rememberMe" name="rememberMe" type="checkbox" className="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
                             <span>Remember me</span>
                         </label>
                         <Link to="/forgot-password" className="text-purple-600 font-medium hover:text-purple-800 transition">Forgot password?</Link>
