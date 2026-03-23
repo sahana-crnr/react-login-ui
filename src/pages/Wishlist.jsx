@@ -42,11 +42,11 @@ export default function Wishlist() {
                 </div>
 
                 {wishlistItems.length === 0 ? (
-                    <div className="text-center text-gray-500 text-lg py-20 flex flex-col items-center justify-center opacity-70">
-                        <FaHeartBroken className="text-6xl mb-4 text-gray-400" />
-                        <p>Your wishlist is currently empty.</p>
+                    <div className="text-center py-20 flex flex-col items-center justify-center">
+                        <FaHeartBroken className="text-6xl mb-4 text-gray-400 opacity-70" />
+                        <p className="text-gray-500 text-lg opacity-70">Your wishlist is currently empty.</p>
                         <Link to="/home">
-                            <Button className="mt-6 px-6 py-2 w-auto">Continue Shopping</Button>
+                            <Button className="mt-6 px-6 py-2 w-auto rounded-2xl">Continue Shopping</Button>
                         </Link>
                     </div>
                 ) : (
@@ -63,10 +63,10 @@ export default function Wishlist() {
                                     <p className="text-purple-700 font-bold text-lg mt-2">₹{item.price}</p>
                                 </div>
 
-                                    <button onClick={() => handleRemoveItem(item.id)} className="text-red-500 hover:bg-red-50 p-3 rounded-full transition-colors" title="Remove">
-                                        <FaTrash />
-                                    </button>
-                                </div>
+                                <button onClick={() => handleRemoveItem(item.id)} className="text-red-500 hover:bg-red-50 p-3 rounded-full transition-colors" title="Remove">
+                                    <FaTrash />
+                                </button>
+                            </div>
                         ))}
                     </div>
                 )}

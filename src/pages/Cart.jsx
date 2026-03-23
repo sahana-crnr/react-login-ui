@@ -59,11 +59,11 @@ export default function Cart() {
                 </div>
 
                 {cartItems.length === 0 ? (
-                    <div className="text-center text-gray-500 text-lg py-20 flex flex-col items-center justify-center opacity-70">
-                        <FiShoppingCart className="text-6xl mb-4 text-gray-400" />
-                        <p>Your cart is currently empty.</p>
+                    <div className="text-center py-20 flex flex-col items-center justify-center">
+                        <FiShoppingCart className="text-6xl mb-4 text-gray-400 opacity-70" />
+                        <p className="text-gray-500 text-lg opacity-70">Your cart is currently empty.</p>
                         <Link to="/home">
-                            <Button className="mt-6 px-6 py-2 w-auto">Continue Shopping</Button>
+                            <Button className="mt-6 px-6 py-2 w-auto rounded-2xl">Continue Shopping</Button>
                         </Link>
                     </div>
                 ) : (
@@ -102,7 +102,7 @@ export default function Cart() {
                             <div className="flex justify-between text-gray-600"><span>Subtotal</span><span className="font-semibold text-gray-800">₹{calculateTotal()}</span></div>
                             <div className="flex justify-between text-gray-600"><span>Shipping</span><span className="text-green-600 font-semibold">Free</span></div>
                             <div className="border-t pt-4 mt-2 flex justify-between items-center"><span className="text-lg font-bold text-gray-800">Total</span><span className="text-2xl font-bold text-purple-700">₹{calculateTotal()}</span></div>
-                            <Button className="w-full py-3 mt-4 text-lg font-bold shadow-md">Proceed to Checkout</Button>
+                            <Button className="w-full py-3 mt-4 text-lg font-bold shadow-md rounded-2xl">Proceed to Checkout</Button>
                         </div>
                     </div>
                 )}
