@@ -31,7 +31,7 @@ export default function ProductDetails() {
                 <Header />
                 <main className="flex-1 flex flex-col items-center justify-center">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">Product not found</h2>
-                    <Button onClick={() => navigate(-1)} className="w-auto px-6 py-2 rounded-2xl">Go Back</Button>
+                    <Button onClick={() => navigate(-1)} className="w-auto px-6">Go Back</Button>
                 </main>
                 <Footer />
             </div>
@@ -96,7 +96,7 @@ export default function ProductDetails() {
             <main className="flex-1 p-2 md:p-4 pb-20">
                 {/* Back Navigation */}
                 <div className="max-w-[1200px] mx-auto mb-4 mt-2">
-                    <Button onClick={() => navigate(-1)} className="w-auto px-6 py-2 rounded-2xl flex items-center gap-2 transition font-medium">
+                    <Button onClick={() => navigate(-1)} className="w-auto px-4 flex items-center gap-2">
                         <FaArrowLeft /> Back to Products
                     </Button>
                 </div>
@@ -119,10 +119,10 @@ export default function ProductDetails() {
                         </div>
 
                         <div className="flex w-full gap-2 mt-auto">
-                            <Button onClick={handleAddToCart} className="flex-1 py-3 md:py-4 px-2 rounded-2xl font-bold text-sm md:text-lg flex justify-center items-center gap-2 shadow">
+                            <Button onClick={handleAddToCart} className="w-auto px-4 flex items-center gap-2">
                                 <FiShoppingCart /> ADD TO CART
-                            </Button>
-                            <Button className="flex-1 py-3 md:py-4 px-2 rounded-2xl font-bold text-sm md:text-lg flex justify-center items-center gap-2 shadow">
+                            </Button> 
+                            <Button className="w-auto px-4 flex items-center gap-2">
                                 <FaBolt /> BUY NOW
                             </Button>
                         </div>

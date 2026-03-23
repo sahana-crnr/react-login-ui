@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
+import Button from "../components/common/Button";
 
 // 1. Define the validation schema for login
 const loginSchema = z.object({
@@ -111,13 +112,13 @@ export default function Login() {
                     </div>
 
                     {/* Submit Button */}
-                    <button
+                    <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full bg-purple-600 text-white font-bold py-2.5 rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50 shadow-md mt-6"
+                        className="mt-6"
                     >
                         {isSubmitting ? "Logging in..." : "Login"}
-                    </button>
+                    </Button>
                 </form>
 
                 <p className="text-center text-gray-600 text-sm mt-6">

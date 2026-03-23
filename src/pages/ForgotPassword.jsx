@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import toast from "react-hot-toast";
+import Button from "../components/common/Button";
 
 // 1. Define the validation schema for the email
 const forgotPasswordSchema = z.object({
@@ -66,9 +67,9 @@ export default function ForgotPassword() {
                             <p className="text-red-500 text-xs mt-1 font-medium">{errors.email.message}</p>
                         )}
                     </div>
-                    <button type="submit" disabled={isSubmitting} className="w-full bg-purple-600 text-white font-bold py-2.5 rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50 shadow-md mt-6">
+                    <Button type="submit" disabled={isSubmitting} className="mt-6">
                         {isSubmitting ? "Sending..." : "Send Reset Link"}
-                    </button>
+                    </Button>
                 </form>
                 <p className="text-center text-gray-600 text-sm mt-6">
                     Remember your password? <Link to="/" className="text-purple-600 font-bold hover:text-purple-800 transition">Login</Link>

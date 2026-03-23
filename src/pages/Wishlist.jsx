@@ -46,7 +46,7 @@ export default function Wishlist() {
                         <FaHeartBroken className="text-6xl mb-4 text-gray-400 opacity-70" />
                         <p className="text-gray-500 text-lg opacity-70">Your wishlist is currently empty.</p>
                         <Link to="/home">
-                            <Button className="mt-6 px-6 py-2 w-auto rounded-2xl">Continue Shopping</Button>
+                            <Button className="mt-6 px-6 w-auto">Continue Shopping</Button>
                         </Link>
                     </div>
                 ) : (
