@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch, FaSignOutAlt } from "react-icons/fa";
+import { FaSearch, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
@@ -49,8 +49,17 @@ export default function Header({ searchTerm, setSearchTerm }) {
                             placeholder="Search products..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full px-4 py-2 pl-11 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2 pl-11 pr-10 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
+                        {searchTerm && (
+                            <button
+                                onClick={() => setSearchTerm("")}
+                                className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 transition focus:outline-none"
+                                title="Clear search"
+                            >
+                                <FaTimes />
+                            </button>
+                        )}
                     </div>
                 )}
 

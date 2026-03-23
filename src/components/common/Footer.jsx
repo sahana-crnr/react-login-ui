@@ -18,10 +18,10 @@ export default function Footer() {
                         <li><Link to="/contact" className="hover:text-white transition">Contact</Link></li>
                     </ul>
                 </div>
-                <div>
+                <div className="md:text-right">
                     <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
                     <p className="text-gray-400 text-sm mb-4">Subscribe to get special offers and updates.</p>
-                    <div className="flex justify-center md:justify-start">
+                    <div className="flex justify-center md:justify-end">
                         <input type="email" placeholder="Enter your email" className="px-4 py-2 rounded-l-2xl w-full md:w-auto text-gray-900 outline-none focus:ring-2 focus:ring-purple-500" />
                         <button className="bg-purple-600 text-white px-4 py-2 rounded-r-2xl hover:bg-purple-800 transition">Subscribe</button>
                     </div>
