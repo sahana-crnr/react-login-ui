@@ -3,12 +3,14 @@ import products from "../pages/products.json";
 import ProductCard from "../components/products/ProductCard";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaSort } from "react-icons/fa";
 
 export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isSortOpen, setIsSortOpen] = useState(false);
     const filterRef = useRef(null);
+    const sortRef = useRef(null);
 
     // Filter States
     const [minPrice, setMinPrice] = useState("");
@@ -35,6 +37,10 @@ export default function Home() {
         displayProducts.sort((a, b) => b.price - a.price);
     } else if (sortBy === "rating-desc") {
         displayProducts.sort((a, b) => (b.rating || 4.3) - (a.rating || 4.3));
+    } else if (sortBy === "name-asc") {
+        displayProducts.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "name-desc") {
+        displayProducts.sort((a, b) => b.name.localeCompare(a.name));
     }
 
     // Close filters when clicking outside
@@ -42,6 +48,9 @@ export default function Home() {
         const handleClickOutside = (event) => {
             if (filterRef.current && !filterRef.current.contains(event.target)) {
                 setIsFilterOpen(false);
+            }
+            if (sortRef.current && !sortRef.current.contains(event.target)) {
+                setIsSortOpen(false);
             }
         };
 
@@ -62,59 +71,67 @@ export default function Home() {
                     <h1 className="text-2xl md:text-2xl font-bold text-gray-800">
                         Product Collection
                     </h1>
-                    <div className="flex items-center gap-4" ref={filterRef}>
+                    <div className="flex items-center gap-4">
                         <p className="hidden sm:block text-gray-500 font-medium">{displayProducts.length} Items</p>
 
                         {/* Sort Dropdown */}
-                        <select
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value)}
-                            className="bg-white border border-gray-300 text-gray-700 px-1 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm font-medium"
-                        >
-                            <option value="default">Sort by:Default</option>
-                            <option value="price-asc">Price:Low to High</option>
-                            <option value="price-desc">Price:High to Low</option>
-                            <option value="rating-desc">Rating:High to Low</option>
-                        </select>
+                        <div className="relative" ref={sortRef}>
+                            <button onClick={() => { setIsSortOpen(!isSortOpen); setIsFilterOpen(false); }} className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-2xl flex items-center gap-2 hover:bg-gray-50 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium">
+                                <FaSort /> Sort By
+                            </button>
+                            {isSortOpen && (
+                                <div className="absolute top-full right-0 mt-3 w-48 bg-white p-3 rounded-2xl shadow-2xl border border-gray-200 z-40 flex flex-col gap-1 text-sm font-medium text-gray-700">
+                                    <button onClick={() => { setSortBy("default"); setIsSortOpen(false); }} className={`text-left px-3 py-2 rounded-xl hover:bg-gray-100 ${sortBy === "default" ? "bg-gray-100 font-bold text-purple-700" : ""}`}>Default</button>
+                                    <button onClick={() => { setSortBy("price-asc"); setIsSortOpen(false); }} className={`text-left px-3 py-2 rounded-xl hover:bg-gray-100 ${sortBy === "price-asc" ? "bg-gray-100 font-bold text-purple-700" : ""}`}>Price: Low to High</button>
+                                    <button onClick={() => { setSortBy("price-desc"); setIsSortOpen(false); }} className={`text-left px-3 py-2 rounded-xl hover:bg-gray-100 ${sortBy === "price-desc" ? "bg-gray-100 font-bold text-purple-700" : ""}`}>Price: High to Low</button>
+                                    <button onClick={() => { setSortBy("rating-desc"); setIsSortOpen(false); }} className={`text-left px-3 py-2 rounded-xl hover:bg-gray-100 ${sortBy === "rating-desc" ? "bg-gray-100 font-bold text-purple-700" : ""}`}>Rating: High to Low</button>
+                                    <button onClick={() => { setSortBy("name-asc"); setIsSortOpen(false); }} className={`text-left px-3 py-2 rounded-xl hover:bg-gray-100 ${sortBy === "name-asc" ? "bg-gray-100 font-bold text-purple-700" : ""}`}>Name: A to Z</button>
+                                    <button onClick={() => { setSortBy("name-desc"); setIsSortOpen(false); }} className={`text-left px-3 py-2 rounded-xl hover:bg-gray-100 ${sortBy === "name-desc" ? "bg-gray-100 font-bold text-purple-700" : ""}`}>Name: Z to A</button>
+                                </div>
+                            )}
+                        </div>
 
-                        <button onClick={() => setIsFilterOpen(!isFilterOpen)} className="bg-white border border-gray-300 text-gray-700 px-2 py-2 rounded-2xl flex items-center gap-2 hover:bg-gray-50 transition  shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium">
-                            <FaFilter /> Filters
-                        </button>
+                        {/* Filter Dropdown */}
+                        <div className="relative" ref={filterRef}>
+                            <button onClick={() => { setIsFilterOpen(!isFilterOpen); setIsSortOpen(false); }} className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-2xl flex items-center gap-2 hover:bg-gray-50 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium">
+                                <FaFilter /> Filters
+                            </button>
 
-                        {/* Floating Filters */}
-                        {isFilterOpen && (
-                            <div className="absolute top-full right-0 mt-3 w-full max-w-sm sm:w-80 bg-white p-6 rounded-2xl shadow-2xl border border-gray-200 z-40">
-                                <h2 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Filters</h2>
+                            {/* Floating Filters */}
+                            {isFilterOpen && (
+                                <div className="absolute top-full right-0 mt-3 w-full max-w-sm sm:w-80 bg-white p-6 rounded-2xl shadow-2xl border border-gray-200 z-40">
+                                    <h2 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Filters</h2>
 
-                                <div className="mb-5">
-                                    <h3 className="font-semibold text-gray-700 mb-2 text-sm">Price Range (₹)</h3>
-                                    <div className="flex items-center gap-2">
-                                        <input type="number" placeholder="Min" value={minPrice} onChange={e => setMinPrice(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
-                                        <span className="text-gray-500">-</span>
-                                        <input type="number" placeholder="Max" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                    <div className="mb-5">
+                                        <h3 className="font-semibold text-gray-700 mb-2 text-sm">Price Range (₹)</h3>
+                                        <div className="flex items-center gap-2">
+                                            <input type="number" min="0" placeholder="Min" value={minPrice} onChange={e => setMinPrice(e.target.value === "" ? "" : Math.max(0, e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                            <span className="text-gray-500">-</span>
+                                            <input type="number" min="0" placeholder="Max" value={maxPrice} onChange={e => setMaxPrice(e.target.value === "" ? "" : Math.max(0, e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="mb-5">
-                                    <h3 className="font-semibold text-gray-700 mb-2 text-sm">Minimum Rating</h3>
-                                    <select value={minRating} onChange={e => setMinRating(Number(e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm">
-                                        <option value={0}>All Ratings</option>
-                                        <option value={4}>4 Stars & Up</option>
-                                        <option value={3}>3 Stars & Up</option>
-                                        <option value={2}>2 Stars & Up</option>
-                                    </select>
-                                </div>
+                                    <div className="mb-5">
+                                        <h3 className="font-semibold text-gray-700 mb-2 text-sm">Minimum Rating</h3>
+                                        <select value={minRating} onChange={e => setMinRating(Number(e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm">
+                                            <option value={0}>All Ratings</option>
+                                            <option value={4}>4 Stars & Up</option>
+                                            <option value={3}>3 Stars & Up</option>
+                                            <option value={2}>2 Stars & Up</option>
+                                        </select>
+                                    </div>
 
-                                <div className="mb-6">
-                                    <h3 className="font-semibold text-gray-700 mb-2 text-sm">Minimum Reviews</h3>
-                                    <input type="number" placeholder="e.g. 100" value={minReviews} onChange={e => setMinReviews(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
-                                </div>
+                                    <div className="mb-6">
+                                        <h3 className="font-semibold text-gray-700 mb-2 text-sm">Minimum Reviews</h3>
+                                        <input type="number" min="0" placeholder="e.g. 100" value={minReviews} onChange={e => setMinReviews(e.target.value === "" ? "" : Math.max(0, e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                    </div>
 
-                                <button onClick={() => { setMinPrice(""); setMaxPrice(""); setMinRating(0); setMinReviews(""); }} className="w-full bg-gray-100 text-gray-700 py-2 rounded-xl font-medium hover:bg-gray-200 transition text-sm">
-                                    Clear Filters
-                                </button>
-                            </div>
-                        )}
+                                    <button onClick={() => { setMinPrice(""); setMaxPrice(""); setMinRating(0); setMinReviews(""); }} className="w-full bg-purple-500 text-white py-2 rounded-2xl font-medium hover:bg-purple-800 transition text-sm">
+                                        Clear Filters
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 

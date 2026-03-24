@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     FaBars, FaTimes, FaHeart, FaBoxOpen,
@@ -6,24 +6,16 @@ import {
 } from 'react-icons/fa';
 import { MdCategory } from 'react-icons/md';
 import './Sidebar.css';
+import useAuthStore from '../../store/useAuthStore';
+import useShopStore from '../../store/useShopStore';
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-    const [wishlistCount, setWishlistCount] = useState(0);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const updateWishlistCount = () => {
-            const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-            setWishlistCount(wishlist.length);
-        };
-        updateWishlistCount(); // Check initially
-
-        // Listen for the custom event dispatched by ProductCard
-        window.addEventListener('wishlistUpdated', updateWishlistCount);
-        return () => window.removeEventListener('wishlistUpdated', updateWishlistCount);
-    }, []);
+    const wishlist = useShopStore((state) => state.wishlist);
+    const wishlistCount = wishlist.length;
+    const logoutUser = useAuthStore((state) => state.logoutUser);
 
     // Handlers
     const toggleSidebar = () => setIsOpen(!isOpen);
@@ -35,16 +27,10 @@ const Sidebar = () => {
     };
 
     const handleSignOut = () => {
-        // 1. Clear user session/auth tokens
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("isLoggedIn");
+        logoutUser();
         sessionStorage.clear();
-        navigate("/");
 
-        // 2. Close the sidebar
         setIsOpen(false);
-
-        // 3. Redirect user to the login page
         navigate('/'); // Redirects to the root/login page. Change to '/login' if your route specifically requires it.
     };
 

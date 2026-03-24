@@ -1,26 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FaSearch, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import useAuthStore from "../../store/useAuthStore";
+import useShopStore, { getCartTotalItems } from "../../store/useShopStore";
 
 export default function Header({ searchTerm, setSearchTerm }) {
     const navigate = useNavigate();
-    const [cartCount, setCartCount] = useState(0);
     const logoutUser = useAuthStore(state => state.logoutUser);
-
-    // Check and update cart count when component mounts or event fires
-    useEffect(() => {
-        const updateCartCount = () => {
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            setCartCount(cart.length);
-        };
-        updateCartCount();
-
-        window.addEventListener('cartUpdated', updateCartCount);
-        return () => window.removeEventListener('cartUpdated', updateCartCount);
-    }, []);
+    const cartCount = useShopStore(getCartTotalItems);
 
     const handleLogout = () => {
         logoutUser();

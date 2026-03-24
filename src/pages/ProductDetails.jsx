@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import products from "./products.json";
 import { FaArrowLeft, FaStar, FaTag, FaBolt, FaHeart, FaRegHeart } from "react-icons/fa";
@@ -7,23 +7,16 @@ import Button from "../components/common/Button";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import toast from "react-hot-toast";
+import useShopStore from "../store/useShopStore";
 
 export default function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const product = products.find((p) => p.id === parseInt(id));
-
-    const [isWishlisted, setIsWishlisted] = useState(false);
-
-    // Check if item is already in the wishlist on initial load
-    useEffect(() => {
-        if (product) {
-            const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-            if (wishlist.some((item) => item.id === product.id)) {
-                setIsWishlisted(true);
-            }
-        }
-    }, [product]);
+    
+    const wishlist = useShopStore((state) => state.wishlist);
+    const toggleWishlist = useShopStore((state) => state.toggleWishlist);
+    const addToCart = useShopStore((state) => state.addToCart);
 
     if (!product) {
         return (
@@ -46,20 +39,10 @@ export default function ProductDetails() {
     const ratingsCount = product.ratingsCount ? product.ratingsCount.toLocaleString() : "8,543";
     const reviewsCount = product.reviewsCount ? product.reviewsCount.toLocaleString() : "854";
 
+    const isWishlisted = wishlist.some((item) => item.id === product.id);
+
     const handleWishlist = () => {
-        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-
-        if (isWishlisted) {
-            wishlist = wishlist.filter((item) => item.id !== product.id);
-            toast.success("Removed from Wishlist!");
-        } else {
-            wishlist.push(product);
-            toast.success("Added to Wishlist!");
-        }
-
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-        setIsWishlisted(!isWishlisted);
-        window.dispatchEvent(new Event('wishlistUpdated'));
+        toggleWishlist(product);
     };
 
     const handleShare = async () => {
@@ -78,15 +61,7 @@ export default function ProductDetails() {
     };
 
     const handleAddToCart = () => {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        if (cart.some((item) => item.id === product.id)) {
-            toast.error("Item already in cart!");
-        } else {
-            cart.push({ ...product, quantity: 1 });
-            localStorage.setItem("cart", JSON.stringify(cart));
-            toast.success("Added to Cart!");
-            window.dispatchEvent(new Event('cartUpdated'));
-        }
+        addToCart(product);
     };
 
     return (

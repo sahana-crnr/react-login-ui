@@ -1,35 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import Button from "../components/common/Button";
 import { FaHeartBroken, FaTrash } from "react-icons/fa";
-import toast from "react-hot-toast";
+import useShopStore from "../store/useShopStore";
 
 export default function Wishlist() {
-    const [wishlistItems, setWishlistItems] = useState([]);
     const navigate = useNavigate();
-
-    const fetchWishlist = () => {
-        const items = JSON.parse(localStorage.getItem("wishlist")) || [];
-        setWishlistItems(items);
-    };
-
-    useEffect(() => {
-        fetchWishlist();
-        // Re-render instantly if a user clicks the heart to remove an item
-        window.addEventListener('wishlistUpdated', fetchWishlist);
-        return () => window.removeEventListener('wishlistUpdated', fetchWishlist);
-    }, []);
-
-    const handleRemoveItem = (id) => {
-        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-        wishlist = wishlist.filter((item) => item.id !== id);
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-        setWishlistItems(wishlist);
-        toast.success("Removed from Wishlist!");
-        window.dispatchEvent(new Event('wishlistUpdated'));
-    };
+    const wishlistItems = useShopStore((state) => state.wishlist);
+    const handleRemoveItem = useShopStore((state) => state.removeFromWishlist);
 
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col">

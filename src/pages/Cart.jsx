@@ -1,52 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Button from "../components/common/Button";
+import useShopStore, { getCartTotalItems, getCartTotalPrice } from "../store/useShopStore";
 
 export default function Cart() {
-    const [cartItems, setCartItems] = useState([]);
     const navigate = useNavigate();
-
-    const fetchCart = () => {
-        const items = JSON.parse(localStorage.getItem("cart")) || [];
-        setCartItems(items);
-    };
-
-    useEffect(() => {
-        fetchCart();
-        window.addEventListener('cartUpdated', fetchCart);
-        return () => window.removeEventListener('cartUpdated', fetchCart);
-    }, []);
-
-    const updateQuantity = (id, delta) => {
-        let cart = [...cartItems];
-        const itemIndex = cart.findIndex(item => item.id === id);
-
-        if (itemIndex !== -1) {
-            cart[itemIndex].quantity += delta;
-            // Remove item if quantity goes to 0
-            if (cart[itemIndex].quantity <= 0) {
-                cart.splice(itemIndex, 1);
-            }
-            setCartItems(cart);
-            localStorage.setItem("cart", JSON.stringify(cart));
-            window.dispatchEvent(new Event('cartUpdated'));
-        }
-    };
-
-    const removeItem = (id) => {
-        const cart = cartItems.filter(item => item.id !== id);
-        setCartItems(cart);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        window.dispatchEvent(new Event('cartUpdated'));
-    };
-
-    const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    };
+    const cartItems = useShopStore((state) => state.cart);
+    const cartTotalItems = useShopStore(getCartTotalItems);
+    const cartTotalPrice = useShopStore(getCartTotalPrice);
+    const updateQuantity = useShopStore((state) => state.updateCartQuantity);
+    const removeItem = useShopStore((state) => state.removeFromCart);
 
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col">
@@ -55,7 +22,7 @@ export default function Cart() {
             <main className="flex-1 p-4 md:p-8 max-w-6xl mx-auto w-full">
                 <div className="mb-8 border-b pb-4">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Shopping Cart</h1>
-                    <p className="text-gray-500 font-medium mt-1">{cartItems.length} {cartItems.length === 1 ? 'Item' : 'Items'} in your cart</p>
+                    <p className="text-gray-500 font-medium mt-1">{cartTotalItems} {cartTotalItems === 1 ? 'Item' : 'Items'} in your cart</p>
                 </div>
 
                 {cartItems.length === 0 ? (
@@ -99,9 +66,9 @@ export default function Cart() {
                         {/* Order Summary */}
                         <div className="w-full lg:w-80 h-fit bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-4">
                             <h2 className="text-xl font-bold text-gray-800 border-b pb-4">Order Summary</h2>
-                            <div className="flex justify-between text-gray-600"><span>Subtotal</span><span className="font-semibold text-gray-800">₹{calculateTotal()}</span></div>
+                            <div className="flex justify-between text-gray-600"><span>Subtotal</span><span className="font-semibold text-gray-800">₹{cartTotalPrice}</span></div>
                             <div className="flex justify-between text-gray-600"><span>Shipping</span><span className="text-green-600 font-semibold">Free</span></div>
-                            <div className="border-t pt-4 mt-2 flex justify-between items-center"><span className="text-lg font-bold text-gray-800">Total</span><span className="text-2xl font-bold text-purple-700">₹{calculateTotal()}</span></div>
+                            <div className="border-t pt-4 mt-2 flex justify-between items-center"><span className="text-lg font-bold text-gray-800">Total</span><span className="text-2xl font-bold text-purple-700">₹{cartTotalPrice}</span></div>
                             <Button className="mt-4 text-lg">Proceed to Checkout</Button>
                         </div>
                     </div>

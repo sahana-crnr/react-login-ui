@@ -1,41 +1,23 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import toast from "react-hot-toast";
+import useShopStore from "../../store/useShopStore";
 
 function ProductCard({ product }) {
     const navigate = useNavigate();
     const originalPrice = product.originalPrice || Math.round(product.price * 1.35);
     const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
 
-    const [isWishlisted, setIsWishlisted] = useState(false);
+    const wishlist = useShopStore((state) => state.wishlist);
+    const toggleWishlist = useShopStore((state) => state.toggleWishlist);
 
-    // Check if item is already in the wishlist on initial load
-    useEffect(() => {
-        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-        if (wishlist.some((item) => item.id === product.id)) {
-            setIsWishlisted(true);
-        }
-    }, [product.id]);
+    const isWishlisted = wishlist.some((item) => item.id === product.id);
 
     const handleWishlist = (e) => {
         e.stopPropagation(); // Prevents clicking the card and navigating
-        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-
-        if (isWishlisted) {
-            wishlist = wishlist.filter((item) => item.id !== product.id);
-            toast.success("Removed from Wishlist!");
-        } else {
-            wishlist.push(product);
-            toast.success("Added to Wishlist!");
-        }
-
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-        setIsWishlisted(!isWishlisted);
-
-        // Dispatch event so the Sidebar can instantly update its count
-        window.dispatchEvent(new Event('wishlistUpdated'));
+        toggleWishlist(product);
     };
 
     const handleShare = async (e) => {
