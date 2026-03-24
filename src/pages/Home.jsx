@@ -126,7 +126,7 @@ export default function Home() {
                                         <input type="number" min="0" placeholder="e.g. 100" value={minReviews} onChange={e => setMinReviews(e.target.value === "" ? "" : Math.max(0, e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
                                     </div>
 
-                                    <button onClick={() => { setMinPrice(""); setMaxPrice(""); setMinRating(0); setMinReviews(""); }} className="w-full bg-purple-500 text-white py-2 rounded-2xl font-medium hover:bg-purple-800 transition text-sm">
+                                    <button onClick={() => { setMinPrice(""); setMaxPrice(""); setMinRating(0); setMinReviews(""); }} className="w-full bg-purple-600 text-white py-2.5 rounded-2xl font-medium hover:bg-purple-800 transition text-sm">
                                         Clear Filters
                                     </button>
                                 </div>
