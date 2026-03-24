@@ -50,6 +50,14 @@ const useShopStore = create(
                 const { wishlist } = get();
                 set({ wishlist: wishlist.filter(item => item.id !== id) });
                 toast.success("Removed from Wishlist!");
+            },
+
+            setShop: (cart, wishlist) => {
+                set({ cart, wishlist });
+            },
+
+            clearShop: () => {
+                set({ cart: [], wishlist: [] });
             }
         }),
         {

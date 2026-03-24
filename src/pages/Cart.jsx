@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
@@ -6,14 +6,23 @@ import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Button from "../components/common/Button";
 import useShopStore, { getCartTotalItems, getCartTotalPrice } from "../store/useShopStore";
+import useAuthStore from "../store/useAuthStore";
 
 export default function Cart() {
     const navigate = useNavigate();
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const cartItems = useShopStore((state) => state.cart);
     const cartTotalItems = useShopStore(getCartTotalItems);
     const cartTotalPrice = useShopStore(getCartTotalPrice);
     const updateQuantity = useShopStore((state) => state.updateCartQuantity);
     const removeItem = useShopStore((state) => state.removeFromCart);
+
+    // Prevent going back to this page after logout
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/", { replace: true });
+        }
+    }, [isLoggedIn, navigate]);
 
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col">

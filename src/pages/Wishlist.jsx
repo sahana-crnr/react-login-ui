@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import Button from "../components/common/Button";
 import { FaHeartBroken, FaTrash } from "react-icons/fa";
 import useShopStore from "../store/useShopStore";
+import useAuthStore from "../store/useAuthStore";
 
 export default function Wishlist() {
     const navigate = useNavigate();
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const wishlistItems = useShopStore((state) => state.wishlist);
     const handleRemoveItem = useShopStore((state) => state.removeFromWishlist);
+
+    // Prevent going back to this page after logout
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/", { replace: true });
+        }
+    }, [isLoggedIn, navigate]);
 
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col">

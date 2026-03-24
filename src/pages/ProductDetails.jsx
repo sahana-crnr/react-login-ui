@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import products from "./products.json";
 import { FaArrowLeft, FaStar, FaTag, FaBolt, FaHeart, FaRegHeart } from "react-icons/fa";
@@ -8,15 +8,24 @@ import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import toast from "react-hot-toast";
 import useShopStore from "../store/useShopStore";
+import useAuthStore from "../store/useAuthStore";
 
 export default function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const product = products.find((p) => p.id === parseInt(id));
     
     const wishlist = useShopStore((state) => state.wishlist);
     const toggleWishlist = useShopStore((state) => state.toggleWishlist);
     const addToCart = useShopStore((state) => state.addToCart);
+
+    // Prevent going back to this page after logout
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/", { replace: true });
+        }
+    }, [isLoggedIn, navigate]);
 
     if (!product) {
         return (

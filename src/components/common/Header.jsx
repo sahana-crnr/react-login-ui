@@ -10,11 +10,22 @@ export default function Header({ searchTerm, setSearchTerm }) {
     const navigate = useNavigate();
     const logoutUser = useAuthStore(state => state.logoutUser);
     const cartCount = useShopStore(getCartTotalItems);
+    const clearShop = useShopStore((state) => state.clearShop);
 
     const handleLogout = () => {
+        const currentUser = useAuthStore.getState().currentUser;
+        const cart = useShopStore.getState().cart;
+        const wishlist = useShopStore.getState().wishlist;
+        const updateUserData = useAuthStore.getState().updateUserData;
+
+        if (currentUser) {
+            updateUserData(currentUser.email, cart, wishlist);
+        }
+
         logoutUser();
+        clearShop();
         sessionStorage.clear();
-        navigate("/");
+        navigate("/", { replace: true });
     };
 
     return (

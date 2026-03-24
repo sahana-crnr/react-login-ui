@@ -16,6 +16,7 @@ const Sidebar = () => {
     const wishlist = useShopStore((state) => state.wishlist);
     const wishlistCount = wishlist.length;
     const logoutUser = useAuthStore((state) => state.logoutUser);
+    const clearShop = useShopStore((state) => state.clearShop);
 
     // Handlers
     const toggleSidebar = () => setIsOpen(!isOpen);
@@ -27,11 +28,21 @@ const Sidebar = () => {
     };
 
     const handleSignOut = () => {
+        const currentUser = useAuthStore.getState().currentUser;
+        const cart = useShopStore.getState().cart;
+        const wishlist = useShopStore.getState().wishlist;
+        const updateUserData = useAuthStore.getState().updateUserData;
+
+        if (currentUser) {
+            updateUserData(currentUser.email, cart, wishlist);
+        }
+
         logoutUser();
+        clearShop();
         sessionStorage.clear();
 
         setIsOpen(false);
-        navigate('/'); // Redirects to the root/login page. Change to '/login' if your route specifically requires it.
+        navigate('/', { replace: true });
     };
 
     return (

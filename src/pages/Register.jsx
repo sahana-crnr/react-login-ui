@@ -56,7 +56,7 @@ export default function Register() {
         toast.success(result.message, { duration: 5000 });
         console.log("Account created successfully:", data);
         // Redirect to Login page after successful registration
-        navigate("/");
+        navigate("/", { replace: true });
     };
 
     return (

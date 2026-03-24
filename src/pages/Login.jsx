@@ -7,6 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import Button from "../components/common/Button";
 import useAuthStore from "../store/useAuthStore";
+import useShopStore from "../store/useShopStore";
 
 // 1. Define the validation schema for login
 const loginSchema = z.object({
@@ -24,6 +25,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const loginUser = useAuthStore(state => state.loginUser);
+    const setShop = useShopStore(state => state.setShop);
 
     // 2. Initialize react-hook-form with the Zod resolver
     const {
@@ -47,10 +49,13 @@ export default function Login() {
             return;
         }
 
+        // Load the specific user's saved cart and wishlist
+        setShop(result.user.cart || [], result.user.wishlist || []);
+
         toast.success(result.message, { duration: 5000 });
         console.log("Login submitted successfully:", data);
         // Redirect to the Home page after successful submission
-        navigate("/home");
+        navigate("/home", { replace: true });
     };
 
     return (
