@@ -15,8 +15,6 @@ const Sidebar = () => {
     const navigate = useNavigate();
     const wishlist = useShopStore((state) => state.wishlist);
     const wishlistCount = wishlist.length;
-    const logoutUser = useAuthStore((state) => state.logoutUser);
-    const clearShop = useShopStore((state) => state.clearShop);
 
     // Handlers
     const toggleSidebar = () => setIsOpen(!isOpen);
@@ -28,15 +26,15 @@ const Sidebar = () => {
     };
 
     const handleSignOut = () => {
-        const currentUser = useAuthStore.getState().currentUser;
-        const cart = useShopStore.getState().cart;
-        const wishlist = useShopStore.getState().wishlist;
-        const updateUserData = useAuthStore.getState().updateUserData;
+        const { currentUser, updateUserData, logoutUser } = useAuthStore.getState();
+        const { cart, wishlist, clearShop } = useShopStore.getState();
 
+        // 1. Save data to the user's permanent profile
         if (currentUser) {
             updateUserData(currentUser.email, cart, wishlist);
         }
 
+        // 2. Wipe the active session and shop clean
         logoutUser();
         clearShop();
         sessionStorage.clear();
