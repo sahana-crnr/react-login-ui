@@ -7,6 +7,8 @@ const useShopStore = create(
         (set, get) => ({
             cart: [],
             wishlist: [],
+            discountCode: "",
+            discountPercent: 0,
 
             addToCart: (product) => {
                 const { cart } = get();
@@ -52,12 +54,29 @@ const useShopStore = create(
                 toast.success("Removed from Wishlist!");
             },
 
+            applyDiscount: (code) => {
+                if (code === "SAVE10") {
+                    set({ discountCode: code, discountPercent: 10 });
+                    toast.success("10% discount applied!");
+                } else if (code === "SAVE20") {
+                    set({ discountCode: code, discountPercent: 20 });
+                    toast.success("20% discount applied!");
+                } else {
+                    toast.error("Invalid discount code!");
+                }
+            },
+
+            removeDiscount: () => {
+                set({ discountCode: "", discountPercent: 0 });
+                toast.success("Discount removed!");
+            },
+
             setShop: (cart, wishlist) => {
-                set({ cart, wishlist });
+                set({ cart, wishlist, discountCode: "", discountPercent: 0 });
             },
 
             clearShop: () => {
-                set({ cart: [], wishlist: [] });
+                set({ cart: [], wishlist: [], discountCode: "", discountPercent: 0 });
             }
         }),
         {

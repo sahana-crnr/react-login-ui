@@ -6,6 +6,7 @@ import ProductDetails from './pages/ProductDetails';
 import Wishlist from './pages/Wishlist';
 import Cart from "./pages/Cart";
 import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
   return (
@@ -13,10 +14,14 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/product/:id" element={<ProductDetails />} />
-      <Route path="/wishlist" element={<Wishlist />} />
-      <Route path="/cart" element={<Cart />} />
+
+      {/* Protected Routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/home" element={<Home />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/cart" element={<Cart />} />
+      </Route>
     </Routes>
   );
 }

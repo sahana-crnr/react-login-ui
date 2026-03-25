@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
@@ -6,23 +6,22 @@ import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Button from "../components/common/Button";
 import useShopStore, { getCartTotalItems, getCartTotalPrice } from "../store/useShopStore";
-import useAuthStore from "../store/useAuthStore";
 
 export default function Cart() {
     const navigate = useNavigate();
-    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const cartItems = useShopStore((state) => state.cart);
     const cartTotalItems = useShopStore(getCartTotalItems);
     const cartTotalPrice = useShopStore(getCartTotalPrice);
     const updateQuantity = useShopStore((state) => state.updateCartQuantity);
     const removeItem = useShopStore((state) => state.removeFromCart);
+    const discountPercent = useShopStore((state) => state.discountPercent);
+    const discountCode = useShopStore((state) => state.discountCode);
+    const applyDiscount = useShopStore((state) => state.applyDiscount);
+    const removeDiscount = useShopStore((state) => state.removeDiscount);
+    const [couponInput, setCouponInput] = useState("");
 
-    // Prevent going back to this page after logout
-    useEffect(() => {
-        if (!isLoggedIn) {
-            navigate("/", { replace: true });
-        }
-    }, [isLoggedIn, navigate]);
+    const discountAmount = Math.round(cartTotalPrice * (discountPercent / 100));
+    const finalPrice = cartTotalPrice - discountAmount;
 
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col">
@@ -75,9 +74,37 @@ export default function Cart() {
                         {/* Order Summary */}
                         <div className="w-full lg:w-80 h-fit bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-4">
                             <h2 className="text-xl font-bold text-gray-800 border-b pb-4">Order Summary</h2>
+
+                            {/* Coupon Section */}
+                            <div className="flex flex-col gap-2 border-b pb-4">
+                                <label className="text-sm font-semibold text-gray-700">Apply Coupon</label>
+                                {discountCode ? (
+                                    <div className="flex justify-between items-center bg-green-50 text-green-700 px-3 py-2 rounded-xl border border-green-200">
+                                        <span className="font-bold text-sm">{discountCode} Applied</span>
+                                        <button onClick={removeDiscount} className="text-red-500 text-sm font-bold hover:underline">Remove</button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Code (e.g. SAVE10)"
+                                            value={couponInput}
+                                            onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm uppercase"
+                                        />
+                                        <button onClick={() => applyDiscount(couponInput)} className="bg-gray-900 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-800 transition text-sm">
+                                            Apply
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="flex justify-between text-gray-600"><span>Subtotal</span><span className="font-semibold text-gray-800">₹{cartTotalPrice}</span></div>
+                            {discountAmount > 0 && (
+                                <div className="flex justify-between text-green-600"><span>Discount ({discountPercent}%)</span><span className="font-semibold">-₹{discountAmount}</span></div>
+                            )}
                             <div className="flex justify-between text-gray-600"><span>Shipping</span><span className="text-green-600 font-semibold">Free</span></div>
-                            <div className="border-t pt-4 mt-2 flex justify-between items-center"><span className="text-lg font-bold text-gray-800">Total</span><span className="text-2xl font-bold text-purple-700">₹{cartTotalPrice}</span></div>
+                            <div className="border-t pt-4 mt-2 flex justify-between items-center"><span className="text-lg font-bold text-gray-800">Total</span><span className="text-2xl font-bold text-purple-700">₹{finalPrice}</span></div>
                             <Button className="mt-4 text-lg">Proceed to Checkout</Button>
                         </div>
                     </div>

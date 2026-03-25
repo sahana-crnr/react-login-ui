@@ -1,20 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import products from "../pages/products.json";
 import ProductCard from "../components/products/ProductCard";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { FaFilter, FaSort } from "react-icons/fa";
-import useAuthStore from "../store/useAuthStore";
 
 export default function Home() {
-    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
     const filterRef = useRef(null);
     const sortRef = useRef(null);
-    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
     // Filter States
     const [minPrice, setMinPrice] = useState("");
@@ -63,13 +59,6 @@ export default function Home() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
-
-    // Prevent going back to this page after logout
-    useEffect(() => {
-        if (!isLoggedIn) {
-            navigate("/", { replace: true });
-        }
-    }, [isLoggedIn, navigate]);
 
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col">
