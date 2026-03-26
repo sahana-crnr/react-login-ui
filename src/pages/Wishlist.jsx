@@ -2,9 +2,9 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import Button from "../components/common/Button";
 import { FaHeartBroken, FaTrash } from "react-icons/fa";
 import useShopStore from "../store/useShopStore";
+import { Button } from "../components/ui/button";
 
 export default function Wishlist() {
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function Wishlist() {
                         <FaHeartBroken className="text-6xl mb-4 text-gray-400 opacity-70" />
                         <p className="text-gray-500 text-lg opacity-70">Your wishlist is currently empty.</p>
                         <Link to="/home">
-                            <Button className="mt-6 px-6 w-auto">Continue Shopping</Button>
+                            <Button className="mt-6 bg-purple-600 hover:bg-purple-700">Continue Shopping</Button>
                         </Link>
                     </div>
                 ) : (

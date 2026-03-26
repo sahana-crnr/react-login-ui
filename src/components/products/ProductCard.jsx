@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import toast from "react-hot-toast";
+import { Button } from "../ui/button";
 import useShopStore from "../../store/useShopStore";
 
 function ProductCard({ product }) {
@@ -46,14 +47,14 @@ function ProductCard({ product }) {
     return (
         <div onClick={() => navigate(`/product/${product.id}`)} className="relative bg-white rounded-2xl shadow-lg w-full overflow-hidden hover:scale-105 transition flex flex-col gap-4 cursor-pointer">
 
-            <div className="absolute flex flex-col gap-3" style={{ top: '14px', right: '20px', zIndex: 20 }}>
-                <button onClick={handleWishlist} className="text-gray-200 hover:text-red-500 transition-colors" title="Wishlist">
+            <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
+                <Button onClick={handleWishlist} variant="ghost" size="icon" className="h-9 w-9 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/10 " title="Wishlist">
                     {isWishlisted ? <FaHeart className="text-red-600 text-xl" /> : <FaRegHeart className="text-lg drop-shadow-sm" />}
-                </button>
+                </Button>
 
-                <button onClick={handleShare} className="text-gray-200 hover:text-blue-400 transition-colors" title="Share">
+                <Button onClick={handleShare} variant="ghost" size="icon" className="h-9 w-9 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/10 hover:text-blue-500" title="Share">
                     <FiShare2 className="text-lg drop-shadow-sm" />
-                </button>
+                </Button>
             </div>
 
             <div className="flex justify-center p-4 bg-purple-900" style={{

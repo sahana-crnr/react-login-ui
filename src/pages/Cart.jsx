@@ -4,8 +4,9 @@ import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
-import Button from "../components/common/Button";
 import useShopStore, { getCartTotalItems, getCartTotalPrice } from "../store/useShopStore";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 
 export default function Cart() {
     const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function Cart() {
                         <FiShoppingCart className="text-6xl mb-4 text-gray-400 opacity-70" />
                         <p className="text-gray-500 text-lg opacity-70">Your cart is currently empty.</p>
                         <Link to="/home">
-                            <Button className="mt-6 px-6 w-auto">Continue Shopping</Button>
+                            <Button className="mt-6 bg-purple-600 hover:bg-purple-700">Continue Shopping</Button>
                         </Link>
                     </div>
                 ) : (
@@ -77,7 +78,7 @@ export default function Cart() {
 
                             {/* Coupon Section */}
                             <div className="flex flex-col gap-2 border-b pb-4">
-                                <label className="text-sm font-semibold text-gray-700">Apply Coupon</label>
+                                <label className="text-sm font-medium">Apply Coupon</label>
                                 {discountCode ? (
                                     <div className="flex justify-between items-center bg-green-50 text-green-700 px-3 py-2 rounded-xl border border-green-200">
                                         <span className="font-bold text-sm">{discountCode} Applied</span>
@@ -85,16 +86,19 @@ export default function Cart() {
                                     </div>
                                 ) : (
                                     <div className="flex gap-2">
-                                        <input
+                                        <Input
                                             type="text"
                                             placeholder="Enter Code (e.g. SAVE10)"
                                             value={couponInput}
                                             onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm uppercase"
+                                            className="h-10 text-sm uppercase"
                                         />
-                                        <button onClick={() => applyDiscount(couponInput)} className="bg-gray-900 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-800 transition text-sm">
+                                        <Button onClick={() => {
+                                            applyDiscount(couponInput);
+                                            setCouponInput("");
+                                        }} className="bg-gray-900 hover:bg-gray-800 text-sm h-10">
                                             Apply
-                                        </button>
+                                        </Button>
                                     </div>
                                 )}
                             </div>
@@ -105,7 +109,7 @@ export default function Cart() {
                             )}
                             <div className="flex justify-between text-gray-600"><span>Shipping</span><span className="text-green-600 font-semibold">Free</span></div>
                             <div className="border-t pt-4 mt-2 flex justify-between items-center"><span className="text-lg font-bold text-gray-800">Total</span><span className="text-2xl font-bold text-purple-700">₹{finalPrice}</span></div>
-                            <Button className="mt-4 text-lg">Proceed to Checkout</Button>
+                            <Button className="w-full mt-4 text-lg h-12 bg-purple-600 hover:bg-purple-700">Proceed to Checkout</Button>
                         </div>
                     </div>
                 )}

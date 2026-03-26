@@ -3,11 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import products from "./products.json";
 import { FaArrowLeft, FaStar, FaTag, FaBolt, FaHeart, FaRegHeart } from "react-icons/fa";
 import { FiShoppingCart, FiShare2 } from "react-icons/fi";
-import Button from "../components/common/Button";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import toast from "react-hot-toast";
 import useShopStore from "../store/useShopStore";
+import { Button } from "../components/ui/button";
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -24,7 +24,7 @@ export default function ProductDetails() {
                 <Header />
                 <main className="flex-1 flex flex-col items-center justify-center">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">Product not found</h2>
-                    <Button onClick={() => navigate(-1)} className="w-auto px-6">Go Back</Button>
+                    <Button onClick={() => navigate(-1)} className="bg-purple-600 hover:bg-purple-700">Go Back</Button>
                 </main>
                 <Footer />
             </div>
@@ -70,8 +70,8 @@ export default function ProductDetails() {
 
             <main className="flex-1 p-2 md:p-4 pb-20">
                 {/* Back Navigation */}
-                <div className="max-w-[1200px] mx-auto mb-4 mt-2">
-                    <Button onClick={() => navigate(-1)} className="w-auto px-4 flex items-center gap-2">
+                <div className="max-w-[1200px] mx-auto mb-4 mt-2 ">
+                    <Button onClick={() => navigate(-1)} variant="outline" className="flex items-center bg-purple-600 hover:bg-purple-700 text-white gap-2">
                         <FaArrowLeft /> Back to Products
                     </Button>
                 </div>
@@ -94,10 +94,10 @@ export default function ProductDetails() {
                         </div>
 
                         <div className="flex w-full gap-2 mt-auto">
-                            <Button onClick={handleAddToCart} className="w-auto px-4 flex items-center gap-2">
+                            <Button onClick={handleAddToCart} className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
                                 <FiShoppingCart /> ADD TO CART
                             </Button> 
-                            <Button className="w-auto px-4 flex items-center gap-2">
+                            <Button className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
                                 <FaBolt /> BUY NOW
                             </Button>
                         </div>

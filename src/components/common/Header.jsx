@@ -5,10 +5,14 @@ import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import useAuthStore from "../../store/useAuthStore";
 import useShopStore, { getCartTotalItems } from "../../store/useShopStore";
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import CartSheet from "./CartSheet";
 
 export default function Header({ searchTerm, setSearchTerm }) {
     const navigate = useNavigate();
     const cartCount = useShopStore(getCartTotalItems);
+    const openCart = useShopStore((state) => state.openCart);
 
     const handleLogout = () => {
         const { currentUser, updateUserData, logoutUser } = useAuthStore.getState();
@@ -28,21 +32,22 @@ export default function Header({ searchTerm, setSearchTerm }) {
 
     return (
         <header className="bg-white shadow-md py-4 px-6 md:px-8 sticky top-0 z-50 w-full">
+            <CartSheet />
             <div className="max-w-8xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                 <div className="flex items-center gap-4">
-                    <Sidebar />
+                    <Sidebar /> 
                     <div className="text-3xl font-extrabold text-purple-700 tracking-wide shrink-0">
                         ShopZone
                     </div>
                 </div>
 
                 {setSearchTerm && (
-                    <div className="relative w-full md:max-w-md lg:max-w-lg flex-1">
+                    <div className="relative w-full md:max-w-md lg:max-w-lg flex-1 rounded-2xl">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
                             <FaSearch />
                         </span>
                         <label htmlFor="search" className="sr-only">Search products</label>
-                        <input
+                        <Input
                             id="search"
                             name="search"
                             type="text"
@@ -50,7 +55,7 @@ export default function Header({ searchTerm, setSearchTerm }) {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             autoComplete="off"
-                            className="w-full px-4 py-2 pl-11 pr-10 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="pl-11 pr-10"
                         />
                         {searchTerm && (
                             <button
@@ -70,17 +75,17 @@ export default function Header({ searchTerm, setSearchTerm }) {
                         <Link to="/about" className="hover:text-purple-600 transition">About Us</Link>
                     </nav>
                     <div className="flex gap-1">
-                        <button onClick={() => navigate('/cart')} title="Cart" className="relative bg-purple-600 text-white px-3 py-3 md:px-3 md:py-3 rounded-full text-xl hover:bg-purple-800 transition">
+                        <Button onClick={openCart} title="Cart" size="icon" className="relative rounded-full bg-purple-600 hover:bg-purple-800">
                             <FiShoppingCart />
                             {cartCount > 0 && (
                                 <span className="absolute -top-0.5 -right-1 bg-red-500 text-white text-[10px] font-extrabold min-w-[20px] h-[20px] px-1 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
                                     {cartCount}
                                 </span>
                             )}
-                        </button>
-                        <button onClick={handleLogout} title="Logout" className="bg-purple-600 text-white px-3 py-3 md:px-3.5 md:py-3 rounded-3xl text-lg hover:bg-purple-800 transition">
+                        </Button>
+                        <Button onClick={handleLogout} title="Logout" size="icon" className="rounded-full bg-purple-600 hover:bg-purple-800">
                             <FaSignOutAlt />
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

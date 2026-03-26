@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 export default function Footer() {
     return (
@@ -24,8 +26,8 @@ export default function Footer() {
                         <p className="text-gray-400 text-sm mb-4">Subscribe to get special offers and updates.</p>
                         <form className="flex justify-center md:justify-start" onSubmit={e => e.preventDefault()}>
                             <label htmlFor="newsletter-email" className="sr-only">Newsletter Email</label>
-                            <input id="newsletter-email" name="email" autoComplete="email" type="email" placeholder="Enter your email" className="px-4 py-2 rounded-l-2xl w-full md:w-auto text-gray-900 outline-none focus:ring-2 focus:ring-purple-500" />
-                            <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded-r-2xl hover:bg-purple-800 transition">Subscribe</button>
+                            <Input id="newsletter-email" name="email" autoComplete="email" type="email" placeholder="Enter your email" className="rounded-r-none text-gray-900" />
+                            <Button type="submit" className="rounded-l-none bg-purple-600 hover:bg-purple-800">Subscribe</Button>
                         </form>
                     </div>
                 </div>

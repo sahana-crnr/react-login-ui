@@ -4,8 +4,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import toast from "react-hot-toast";
-import Button from "../components/common/Button";
 import useAuthStore from "../store/useAuthStore";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 
 // 1. Define the validation schema for the email
 const forgotPasswordSchema = z.object({
@@ -56,20 +58,20 @@ export default function ForgotPassword() {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     <div>
-                        <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-                        <input
+                        <Label htmlFor="email">Email</Label>
+                        <Input
                             id="email"
                             type="email"
                             {...register("email")}
                             autoComplete="email"
-                            className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 transition-all ${errors.email ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-purple-500"}`}
+                            className={`mt-1 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             placeholder="Enter your email"
                         />
                         {errors.email && (
                             <p className="text-red-500 text-xs mt-1 font-medium">{errors.email.message}</p>
                         )}
                     </div>
-                    <Button type="submit" disabled={isSubmitting} className="mt-6">
+                    <Button type="submit" disabled={isSubmitting} className="w-full mt-6 bg-purple-600 hover:bg-purple-700">
                         {isSubmitting ? "Sending..." : "Send Reset Link"}
                     </Button>
                 </form>

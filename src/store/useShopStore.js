@@ -9,15 +9,28 @@ const useShopStore = create(
             wishlist: [],
             discountCode: "",
             discountPercent: 0,
+            isCartOpen: false,
+
+            openCart: () => set({ isCartOpen: true }),
+            closeCart: () => set({ isCartOpen: false }),
 
             addToCart: (product) => {
-                const { cart } = get();
-                if (cart.some((item) => item.id === product.id)) {
-                    toast.error("Item already in cart!");
+                const { cart, openCart } = get();
+                const existingItem = cart.find((item) => item.id === product.id);
+
+                if (existingItem) {
+                    const updatedCart = cart.map((item) =>
+                        item.id === product.id
+                            ? { ...item, quantity: item.quantity + 1 }
+                            : item
+                    );
+                    set({ cart: updatedCart });
+                    toast.success("Item quantity updated!");
                 } else {
                     set({ cart: [...cart, { ...product, quantity: 1 }] });
                     toast.success("Added to Cart!");
                 }
+                openCart();
             },
 
             updateCartQuantity: (id, delta) => {
@@ -88,5 +101,5 @@ const useShopStore = create(
 export default useShopStore;
 
 // Derived State Selectors (Auto-Calculations)
-export const getCartTotalItems = (state) => state.cart.reduce((total, item) => total + item.quantity, 0);
+export const getCartTotalItems = (state) => state.cart.length;
 export const getCartTotalPrice = (state) => state.cart.reduce((total, item) => total + (item.price * item.quantity), 0);

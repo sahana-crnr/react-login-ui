@@ -4,6 +4,8 @@ import ProductCard from "../components/products/ProductCard";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { FaFilter, FaSort } from "react-icons/fa";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 
 export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -105,15 +107,15 @@ export default function Home() {
                                     <div className="mb-5">
                                         <h3 className="font-semibold text-gray-700 mb-2 text-sm">Price Range (₹)</h3>
                                         <div className="flex items-center gap-2">
-                                            <input type="number" min="0" placeholder="Min" value={minPrice} onChange={e => setMinPrice(e.target.value === "" ? "" : Math.max(0, e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                            <Input type="number" min="0" placeholder="Min" value={minPrice} onChange={e => setMinPrice(e.target.value === "" ? "" : Math.max(0, Number(e.target.value)))} className="h-9 text-sm" />
                                             <span className="text-gray-500">-</span>
-                                            <input type="number" min="0" placeholder="Max" value={maxPrice} onChange={e => setMaxPrice(e.target.value === "" ? "" : Math.max(0, e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                            <Input type="number" min="0" placeholder="Max" value={maxPrice} onChange={e => setMaxPrice(e.target.value === "" ? "" : Math.max(0, Number(e.target.value)))} className="h-9 text-sm" />
                                         </div>
                                     </div>
 
                                     <div className="mb-5">
                                         <h3 className="font-semibold text-gray-700 mb-2 text-sm">Minimum Rating</h3>
-                                        <select value={minRating} onChange={e => setMinRating(Number(e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm">
+                                        <select value={minRating} onChange={e => setMinRating(Number(e.target.value))} className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
                                             <option value={0}>All Ratings</option>
                                             <option value={4}>4 Stars & Up</option>
                                             <option value={3}>3 Stars & Up</option>
@@ -123,12 +125,12 @@ export default function Home() {
 
                                     <div className="mb-6">
                                         <h3 className="font-semibold text-gray-700 mb-2 text-sm">Minimum Reviews</h3>
-                                        <input type="number" min="0" placeholder="e.g. 100" value={minReviews} onChange={e => setMinReviews(e.target.value === "" ? "" : Math.max(0, e.target.value))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                        <Input type="number" min="0" placeholder="e.g. 100" value={minReviews} onChange={e => setMinReviews(e.target.value === "" ? "" : Math.max(0, Number(e.target.value)))} className="h-9 text-sm" />
                                     </div>
 
-                                    <button onClick={() => { setMinPrice(""); setMaxPrice(""); setMinRating(0); setMinReviews(""); }} className="w-full bg-purple-600 text-white py-2.5 rounded-2xl font-medium hover:bg-purple-800 transition text-sm">
+                                    <Button onClick={() => { setMinPrice(""); setMaxPrice(""); setMinRating(0); setMinReviews(""); }} className="w-full bg-purple-600 hover:bg-purple-700 text-sm">
                                         Clear Filters
-                                    </button>
+                                    </Button>
                                 </div>
                             )}
                         </div>
