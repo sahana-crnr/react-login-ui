@@ -79,7 +79,7 @@ const Sidebar = () => {
                                 <li className="hover:text-purple-600 cursor-pointer">Sports & Outdoors</li>
                             </ul>
                         </div>
-
+{/* button */}
                         <Button variant="ghost" onClick={() => handleNavigation('/wishlist')} className="w-full justify-start text-base h-12 gap-4">
                             <FaHeart className="h-5 w-5" />
                             <span>My Wishlist</span>
