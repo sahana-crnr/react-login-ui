@@ -1,7 +1,6 @@
 {
   "homepage": ".",
   "name": "login-app",
-  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

@@ -94,6 +94,7 @@ const useShopStore = create(
         }),
         {
             name: 'shop-storage', // The key used in localStorage
+            version: undefined,
         }
     )
 );

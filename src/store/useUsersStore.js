@@ -23,6 +23,7 @@ const useUsersStore = create(
         }),
         {
             name: 'users-storage', // The key used in localStorage
+            version: undefined,
         }
     )
 );

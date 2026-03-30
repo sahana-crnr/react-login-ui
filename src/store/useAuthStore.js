@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import useUsersStore from './useUsersStore';
 
+import useShopStore from './useShopStore';
+
 const useAuthStore = create(
     persist(
         (set, get) => ({
@@ -32,7 +34,12 @@ const useAuthStore = create(
             },
 
             logoutUser: () => {
+                const { currentUser } = get();
+                if (currentUser) {
+                    useUsersStore.getState().updateUser(currentUser.email, { cart: [], wishlist: [] });
+                }
                 set({ currentUser: null, isLoggedIn: false });
+                useShopStore.getState().clearShop();
             },
 
             checkEmailExists: (email) => {
@@ -46,6 +53,7 @@ const useAuthStore = create(
         }),
         {
             name: 'auth-storage', // The key used in localStorage
+            version: undefined,
         }
     )
 );

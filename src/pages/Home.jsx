@@ -20,6 +20,7 @@ export default function Home() {
     const [minRating, setMinRating] = useState(0);
     const [minReviews, setMinReviews] = useState("");
     const [sortBy, setSortBy] = useState("default");
+    const [visibleCount, setVisibleCount] = useState(8);
 
     const filteredProducts = products.filter((product) => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -47,19 +48,17 @@ export default function Home() {
 
     // Close filters when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (filterRef.current && !filterRef.current.contains(event.target)) {
-                setIsFilterOpen(false);
-            }
-            if (sortRef.current && !sortRef.current.contains(event.target)) {
-                setIsSortOpen(false);
+        const handleScroll = () => {
+            if (
+                window.innerHeight + document.documentElement.scrollTop >=
+                document.documentElement.offsetHeight - 100 
+            ) {
+                setVisibleCount(prevCount => prevCount + 8);
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return (
@@ -142,7 +141,7 @@ export default function Home() {
                     <div className="text-center text-gray-500 text-lg py-20 bg-white rounded-2xl shadow-sm border border-gray-200">No products found matching your criteria.</div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
-                        {displayProducts.map((product) => (
+                        {displayProducts.slice(0, visibleCount).map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
