@@ -31,17 +31,15 @@ const Sidebar = () => {
 
     const handleSignOut = () => {
         const { currentUser, updateUserData, logoutUser } = useAuthStore.getState();
-        const { cart, wishlist, clearShop } = useShopStore.getState();
+        const { cart, wishlist } = useShopStore.getState();
 
         // 1. Save data to the user's permanent profile
         if (currentUser) {
             updateUserData(currentUser.email, cart, wishlist);
         }
 
-        // 2. Wipe the active session and shop clean
+        // 2. Clear user session but keep the shop data
         logoutUser();
-        clearShop();
-        sessionStorage.clear();
 
         navigate('/', { replace: true });
     };
@@ -79,7 +77,7 @@ const Sidebar = () => {
                                 <li className="hover:text-purple-600 cursor-pointer">Sports & Outdoors</li>
                             </ul>
                         </div>
-
+                        {/* button */}
                         <Button variant="ghost" onClick={() => handleNavigation('/wishlist')} className="w-full justify-start text-base h-12 gap-4">
                             <FaHeart className="h-5 w-5" />
                             <span>My Wishlist</span>

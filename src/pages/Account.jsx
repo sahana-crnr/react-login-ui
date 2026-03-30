@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
 import { Button } from '../components/ui/button';
 import { FaUserCircle } from 'react-icons/fa';
+import useShopStore from '../store/useShopStore';
 
 const Account = () => {
     const navigate = useNavigate();
@@ -10,8 +11,16 @@ const Account = () => {
     const logoutUser = useAuthStore((state) => state.logoutUser);
 
     const handleSignOut = () => {
+        const { updateUserData } = useAuthStore.getState();
+        const { cart, wishlist } = useShopStore.getState();
+
+        // 1. Save data to the user's permanent profile
+        if (currentUser) {
+            updateUserData(currentUser.email, cart, wishlist);
+        }
+
+        // 2. Clear user session but keep the shop data
         logoutUser();
-        sessionStorage.clear();
         navigate('/', { replace: true });
     };
 

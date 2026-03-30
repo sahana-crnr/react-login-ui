@@ -14,6 +14,9 @@ const useShopStore = create(
             openCart: () => set({ isCartOpen: true }),
             closeCart: () => set({ isCartOpen: false }),
 
+            setCart: (cart) => set({ cart }),
+            setWishlist: (wishlist) => set({ wishlist }),
+
             addToCart: (product) => {
                 const { cart, openCart } = get();
                 const existingItem = cart.find((item) => item.id === product.id);

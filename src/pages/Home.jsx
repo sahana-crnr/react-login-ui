@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import products from "../pages/products.json";
-import ProductCard from "../components/products/ProductCard";
+import { useInView } from "react-intersection-observer";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import { FaFilter, FaSort } from "react-icons/fa";
-import { Input } from "../components/ui/input";
+import { FaSort, FaFilter, FaSpinner } from "react-icons/fa";
 import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import products from "./products.json";
+import ProductCard from "../components/ProductCard"; // Adjust import path if needed
 
 export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -20,9 +21,17 @@ export default function Home() {
     const [minRating, setMinRating] = useState(0);
     const [minReviews, setMinReviews] = useState("");
     const [sortBy, setSortBy] = useState("default");
-    const [visibleCount, setVisibleCount] = useState(8);
 
-    const filteredProducts = products.filter((product) => {
+    // Pagination / Infinite Scroll States
+    const [visibleCount, setVisibleCount] = useState(8);
+    const { ref, inView } = useInView({
+        /* Triggers the load 400px before the user actually reaches the bottom */
+        rootMargin: "400px",
+    });
+
+    // Ensure products is a valid array to prevent fatal crashes on load
+    const safeProducts = Array.isArray(products) ? products : [];
+    const filteredProducts = safeProducts.filter((product) => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.description.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesMinPrice = minPrice === "" || product.price >= Number(minPrice);
         const matchesMaxPrice = maxPrice === "" || product.price <= Number(maxPrice);
@@ -46,19 +55,28 @@ export default function Home() {
         displayProducts.sort((a, b) => b.name.localeCompare(a.name));
     }
 
+    const paginatedProducts = displayProducts.slice(0, visibleCount);
+    const hasMore = visibleCount < displayProducts.length;
+
+    // Handle infinite scroll using intersection observer
+    useEffect(() => {
+        if (inView && hasMore) {
+            setVisibleCount((prevCount) => prevCount + 8);
+        }
+    }, [inView, hasMore]);
+
     // Close filters when clicking outside
     useEffect(() => {
-        const handleScroll = () => {
-            if (
-                window.innerHeight + document.documentElement.scrollTop >=
-                document.documentElement.offsetHeight - 100 
-            ) {
-                setVisibleCount(prevCount => prevCount + 8);
+        const handleClickOutside = (event) => {
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
+                setIsFilterOpen(false);
+            }
+            if (sortRef.current && !sortRef.current.contains(event.target)) {
+                setIsSortOpen(false);
             }
         };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     return (
@@ -141,9 +159,14 @@ export default function Home() {
                     <div className="text-center text-gray-500 text-lg py-20 bg-white rounded-2xl shadow-sm border border-gray-200">No products found matching your criteria.</div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
-                        {displayProducts.slice(0, visibleCount).map((product) => (
+                        {paginatedProducts.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
+                    </div>
+                )}
+                {hasMore && (
+                    <div ref={ref} className="flex justify-center items-center py-10">
+                        <FaSpinner className="animate-spin text-purple-600 text-3xl" />
                     </div>
                 )}
             </main>

@@ -30,13 +30,15 @@ const useAuthStore = create(
                     return { success: false, message: "Incorrect password.", field: "password" };
                 }
                 set({ currentUser: user, isLoggedIn: true });
+                useShopStore.getState().setShop(user.cart || [], user.wishlist || []);
                 return { success: true, message: "You are logged in successfully!", user };
             },
 
             logoutUser: () => {
                 const { currentUser } = get();
                 if (currentUser) {
-                    useUsersStore.getState().updateUser(currentUser.email, { cart: [], wishlist: [] });
+                    const { cart, wishlist } = useShopStore.getState();
+                    useUsersStore.getState().updateUser(currentUser.email, { cart, wishlist });
                 }
                 set({ currentUser: null, isLoggedIn: false });
                 useShopStore.getState().clearShop();

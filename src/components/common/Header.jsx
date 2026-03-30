@@ -16,17 +16,15 @@ export default function Header({ searchTerm, setSearchTerm }) {
 
     const handleLogout = () => {
         const { currentUser, updateUserData, logoutUser } = useAuthStore.getState();
-        const { cart, wishlist, clearShop } = useShopStore.getState();
+        const { cart, wishlist } = useShopStore.getState();
 
         // 1. Save data to the user's permanent profile
         if (currentUser) {
             updateUserData(currentUser.email, cart, wishlist);
         }
 
-        // 2. Wipe the active session and shop clean
+        // 2. Clear user session but keep the shop data
         logoutUser();
-        clearShop();
-        sessionStorage.clear();
         navigate("/", { replace: true });
     };
 
