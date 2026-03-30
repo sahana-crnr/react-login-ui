@@ -1,11 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import products from "../pages/products.json";
-import ProductCard from "../components/products/ProductCard";
-import Header from "../components/common/Header";
-import Footer from "../components/common/Footer";
-import { FaFilter, FaSort } from "react-icons/fa";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+import { useInView } from "react-intersection-observer";
 
 export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +13,22 @@ export default function Home() {
     const [minRating, setMinRating] = useState(0);
     const [minReviews, setMinReviews] = useState("");
     const [sortBy, setSortBy] = useState("default");
+    const [itemsToDisplay, setItemsToDisplay] = useState(12);
+    const [hasMore, setHasMore] = useState(true);
+
+    const { ref, inView } = useInView({
+        threshold: 0,
+    });
+
+    useEffect(() => {
+        if (inView && hasMore) {
+            setItemsToDisplay(prev => prev + 12);
+        }
+    }, [inView, hasMore]);
+
+    useEffect(() => {
+        setHasMore(itemsToDisplay < displayProducts.length);
+    }, [itemsToDisplay, displayProducts]);
 
     const filteredProducts = products.filter((product) => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -44,7 +53,6 @@ export default function Home() {
     } else if (sortBy === "name-desc") {
         displayProducts.sort((a, b) => b.name.localeCompare(a.name));
     }
-
     // Close filters when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -142,9 +150,14 @@ export default function Home() {
                     <div className="text-center text-gray-500 text-lg py-20 bg-white rounded-2xl shadow-sm border border-gray-200">No products found matching your criteria.</div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
-                        {displayProducts.map((product) => (
+                        {displayProducts.slice(0, itemsToDisplay).map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
+                    </div>
+                )}
+                {hasMore && (
+                    <div ref={ref} className="text-center text-gray-500 text-lg py-10">
+                        Loading more products...
                     </div>
                 )}
             </main>
