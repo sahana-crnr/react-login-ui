@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import products from "./products.json";
+import products from "../data/products.json";
 import { FaArrowLeft, FaStar, FaTag, FaBolt, FaHeart, FaRegHeart } from "react-icons/fa";
 import { FiShoppingCart, FiShare2 } from "react-icons/fi";
 import Header from "../components/common/Header";

@@ -6,10 +6,28 @@ import Footer from "../components/common/Footer";
 import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import products from "./products.json";
+import products from "../data/products.json";
 import ProductCard from "../components/ProductCard"; // Adjust import path if needed
 
 const PRODUCTS_PER_PAGE = 8;
+
+const useDelayedBoolean = (value, delay = 300) => {
+    const [visible, setVisible] = useState(false);
+    const timerRef = useRef();
+
+    useEffect(() => {
+        if (value) {
+            timerRef.current = setTimeout(() => setVisible(true), delay);
+        } else {
+            clearTimeout(timerRef.current);
+            setVisible(false);
+        }
+
+        return () => clearTimeout(timerRef.current);
+    }, [value, delay]);
+
+    return visible;
+};
 
 const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
     const [, filters = {}] = queryKey;
@@ -102,6 +120,8 @@ export default function Home() {
     const displayProducts = productPages.flatMap((page) => page.products);
     const totalFilteredCount = productPages[0]?.totalCount ?? 0;
     const isInitialLoading = isLoading && displayProducts.length === 0;
+    const showInitialLoadingText = useDelayedBoolean(isInitialLoading);
+    const showNextPageLoadingText = useDelayedBoolean(isFetchingNextPage);
 
     // Handle infinite scroll using intersection observer
     useEffect(() => {
@@ -202,7 +222,7 @@ export default function Home() {
                 {/* Product Grid */}
                 {isInitialLoading ? (
                     <div className="flex justify-center items-center py-20 bg-white rounded-2xl shadow-sm border border-gray-200">
-                        <span className="text-purple-600 text-lg font-semibold">Loading...</span>
+                        <span className={`text-purple-600 text-lg font-semibold transition-opacity duration-150 ${showInitialLoadingText ? "opacity-100" : "opacity-60"}`}>Loading...</span>
                     </div>
                 ) : totalFilteredCount === 0 ? (
                     <div className="text-center text-gray-500 text-lg py-20 bg-white rounded-2xl shadow-sm border border-gray-200">No products found matching your criteria.</div>
@@ -215,7 +235,7 @@ export default function Home() {
                 )}
                 {(hasNextPage || isFetchingNextPage) && (
                     <div ref={ref} className="flex justify-center items-center py-10">
-                        <span className="text-purple-600 font-semibold">Loading...</span>
+                        <span className={`text-purple-600 font-semibold transition-opacity duration-150 ${showNextPageLoadingText ? "opacity-100" : "opacity-60"}`}>Loading...</span>
                     </div>
                 )}
             </main>
