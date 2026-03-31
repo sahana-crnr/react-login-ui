@@ -53,9 +53,9 @@ const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
 
     const sorted = [...filtered];
     if (sortBy === "price-asc") {
-        sorted.sort((a, b) => a.price - b.price);
+        sorted.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
     } else if (sortBy === "price-desc") {
-        sorted.sort((a, b) => b.price - a.price);
+        sorted.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
     } else if (sortBy === "rating-desc") {
         sorted.sort((a, b) => (b.rating || 4.3) - (a.rating || 4.3));
     } else if (sortBy === "name-asc") {
