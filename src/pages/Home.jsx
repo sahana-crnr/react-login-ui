@@ -1,12 +1,59 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import { FaSort, FaFilter, FaSpinner } from "react-icons/fa";
+import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import products from "./products.json";
 import ProductCard from "../components/ProductCard"; // Adjust import path if needed
+
+const PRODUCTS_PER_PAGE = 8;
+
+const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
+    const [, filters = {}] = queryKey;
+    const safeProducts = Array.isArray(products) ? products : [];
+    const searchTerm = (filters.searchTerm || "").toLowerCase();
+    const minPriceValue = filters.minPrice === "" || filters.minPrice == null ? null : Number(filters.minPrice);
+    const maxPriceValue = filters.maxPrice === "" || filters.maxPrice == null ? null : Number(filters.maxPrice);
+    const minRatingValue = Number(filters.minRating ?? 0);
+    const minReviewsValue = filters.minReviews === "" || filters.minReviews == null ? null : Number(filters.minReviews);
+    const sortBy = filters.sortBy || "default";
+
+    const filtered = safeProducts.filter((product) => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm) || product.description.toLowerCase().includes(searchTerm);
+        const matchesMinPrice = minPriceValue === null || product.price >= minPriceValue;
+        const matchesMaxPrice = maxPriceValue === null || product.price <= maxPriceValue;
+        const matchesRating = (product.rating || 4.3) >= minRatingValue;
+        const matchesReviews = minReviewsValue === null || (product.reviewsCount || 854) >= minReviewsValue;
+
+        return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesRating && matchesReviews;
+    });
+
+    const sorted = [...filtered];
+    if (sortBy === "price-asc") {
+        sorted.sort((a, b) => a.price - b.price);
+    } else if (sortBy === "price-desc") {
+        sorted.sort((a, b) => b.price - a.price);
+    } else if (sortBy === "rating-desc") {
+        sorted.sort((a, b) => (b.rating || 4.3) - (a.rating || 4.3));
+    } else if (sortBy === "name-asc") {
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "name-desc") {
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    const start = (pageParam - 1) * PRODUCTS_PER_PAGE;
+    const nextPageItems = sorted.slice(start, start + PRODUCTS_PER_PAGE);
+
+    return {
+        page: pageParam,
+        products: nextPageItems,
+        totalCount: sorted.length,
+        hasMore: start + PRODUCTS_PER_PAGE < sorted.length,
+    };
+};
 
 export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -22,48 +69,46 @@ export default function Home() {
     const [minReviews, setMinReviews] = useState("");
     const [sortBy, setSortBy] = useState("default");
 
-    // Pagination / Infinite Scroll States
-    const [visibleCount, setVisibleCount] = useState(8);
     const { ref, inView } = useInView({
         /* Triggers the load 400px before the user actually reaches the bottom */
         rootMargin: "400px",
     });
 
-    // Ensure products is a valid array to prevent fatal crashes on load
-    const safeProducts = Array.isArray(products) ? products : [];
-    const filteredProducts = safeProducts.filter((product) => {
-        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesMinPrice = minPrice === "" || product.price >= Number(minPrice);
-        const matchesMaxPrice = maxPrice === "" || product.price <= Number(maxPrice);
-        const matchesRating = (product.rating || 4.3) >= minRating;
-        const matchesReviews = minReviews === "" || (product.reviewsCount || 854) >= Number(minReviews);
+    const queryFilters = useMemo(() => ({
+        searchTerm,
+        minPrice,
+        maxPrice,
+        minRating,
+        minReviews,
+        sortBy,
+    }), [searchTerm, minPrice, maxPrice, minRating, minReviews, sortBy]);
 
-        return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesRating && matchesReviews;
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading,
+    } = useInfiniteQuery({
+        queryKey: ["products", queryFilters],
+        queryFn: fetchProductsPage,
+        getNextPageParam: (lastPage) => {
+            return lastPage.hasMore ? lastPage.page + 1 : undefined;
+        },
+        keepPreviousData: true,
     });
 
-    // Apply sorting to the filtered products
-    const displayProducts = [...filteredProducts];
-    if (sortBy === "price-asc") {
-        displayProducts.sort((a, b) => a.price - b.price);
-    } else if (sortBy === "price-desc") {
-        displayProducts.sort((a, b) => b.price - a.price);
-    } else if (sortBy === "rating-desc") {
-        displayProducts.sort((a, b) => (b.rating || 4.3) - (a.rating || 4.3));
-    } else if (sortBy === "name-asc") {
-        displayProducts.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === "name-desc") {
-        displayProducts.sort((a, b) => b.name.localeCompare(a.name));
-    }
-
-    const paginatedProducts = displayProducts.slice(0, visibleCount);
-    const hasMore = visibleCount < displayProducts.length;
+    const productPages = data?.pages ?? [];
+    const displayProducts = productPages.flatMap((page) => page.products);
+    const totalFilteredCount = productPages[0]?.totalCount ?? 0;
+    const isInitialLoading = isLoading && displayProducts.length === 0;
 
     // Handle infinite scroll using intersection observer
     useEffect(() => {
-        if (inView && hasMore) {
-            setVisibleCount((prevCount) => prevCount + 8);
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
         }
-    }, [inView, hasMore]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     // Close filters when clicking outside
     useEffect(() => {
@@ -91,7 +136,7 @@ export default function Home() {
                         Product Collection
                     </h1>
                     <div className="flex items-center gap-4">
-                        <p className="hidden sm:block text-gray-500 font-medium">{displayProducts.length} Items</p>
+                        <p className="hidden sm:block text-gray-500 font-medium">{totalFilteredCount} Items</p>
 
                         {/* Sort Dropdown */}
                         <div className="relative" ref={sortRef}>
@@ -155,18 +200,22 @@ export default function Home() {
                 </div>
 
                 {/* Product Grid */}
-                {displayProducts.length === 0 ? (
+                {isInitialLoading ? (
+                    <div className="flex justify-center items-center py-20 bg-white rounded-2xl shadow-sm border border-gray-200">
+                        <span className="text-purple-600 text-lg font-semibold">Loading...</span>
+                    </div>
+                ) : totalFilteredCount === 0 ? (
                     <div className="text-center text-gray-500 text-lg py-20 bg-white rounded-2xl shadow-sm border border-gray-200">No products found matching your criteria.</div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
-                        {paginatedProducts.map((product) => (
+                        {displayProducts.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 )}
-                {hasMore && (
+                {(hasNextPage || isFetchingNextPage) && (
                     <div ref={ref} className="flex justify-center items-center py-10">
-                        <FaSpinner className="animate-spin text-purple-600 text-3xl" />
+                        <span className="text-purple-600 font-semibold">Loading...</span>
                     </div>
                 )}
             </main>
