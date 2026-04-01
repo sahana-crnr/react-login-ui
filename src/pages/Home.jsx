@@ -33,7 +33,7 @@ const useDelayedBoolean = (value, delay = 500) => {
 
 const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
     // Simulate network delay to make loading indicators visible
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const [, filters = {}] = queryKey;
     const safeProducts = Array.isArray(products) ? products : [];
