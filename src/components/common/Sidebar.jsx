@@ -69,7 +69,7 @@ const Sidebar = () => {
 
                         {/* Collapsible Categories List */}
                         <div className={`pl-8 transition-all duration-300 overflow-hidden ${isCategoryOpen ? 'max-h-60' : 'max-h-0'}`}>
-                            <ul className="py-2 space-y-2 text-gray-600">
+                            <ul className="py-2 space-y-2 text-muted-foreground">
                                 <li className="hover:text-purple-600 cursor-pointer">Electronics</li>
                                 <li className="hover:text-purple-600 cursor-pointer">Fashion & Apparel</li>
                                 <li className="hover:text-purple-600 cursor-pointer">Home & Furniture</li>
@@ -94,7 +94,7 @@ const Sidebar = () => {
                         </Button>
                     </div>
 
-                    <div className="p-4 border-t border-gray-200 mt-auto">
+                    <div className="p-4 border-t border-border mt-auto">
                         <Button variant="ghost" onClick={() => handleNavigation('/account')} className="w-full justify-start text-base h-12 gap-4">
                             <FaUserCircle className="h-5 w-5" />
                             <span>Your Account</span>

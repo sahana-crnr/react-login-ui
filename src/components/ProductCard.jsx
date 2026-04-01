@@ -45,7 +45,7 @@ function ProductCard({ product }) {
     };
 
     return (
-        <div onClick={() => navigate(`/product/${product.id}`)} className="relative bg-white rounded-2xl shadow-lg w-full overflow-hidden hover:scale-105 transition flex flex-col gap-4 cursor-pointer">
+        <div onClick={() => navigate(`/product/${product.id}`)} className="relative bg-card border border-border rounded-2xl shadow-lg w-full overflow-hidden hover:scale-105 transition flex flex-col gap-4 cursor-pointer">
 
             <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
                 <Button onClick={handleWishlist} variant="ghost" size="icon" className={iconActionButtonClass} title="Wishlist">
@@ -70,26 +70,25 @@ function ProductCard({ product }) {
                 />
             </div>
 
-            <div className="bg-white relative z-10 -mt-8 border px-4
-             py-4 rounded-2xl p-4 flex-col flex-1">
+            <div className="bg-card relative z-10 -mt-8 border border-border px-4 py-4 rounded-2xl flex flex-col flex-1">
 
-                <h2 className="text-sm md:text-lg font-bold">
+                <h2 className="text-sm md:text-lg font-bold text-foreground">
                     {product.name}
                 </h2>
 
                 <div className="flex gap-4 mt-2 text-xs">
-                    <span className="border px-2 py-1 rounded">{product.size}</span>
-                    <span className="border px-2 py-1 rounded">{product.color}</span>
+                    <span className="border border-border px-2 py-1 rounded text-muted-foreground">{product.size}</span>
+                    <span className="border border-border px-2 py-1 rounded text-muted-foreground">{product.color}</span>
                 </div>
 
-                <p className="text-gray-500 mt-1.5 text-xs md:text-sm">
+                <p className="text-muted-foreground mt-1.5 text-xs md:text-sm">
                     {product.description}
                 </p>
 
                 <div className="flex justify-between items-center mt-auto pt-4">
                     <div className="flex items-baseline gap-2">
-                        <span className="text-sm text-gray-500 line-through">₹ {product.originalPrice}</span>
-                        <span className="text-md font-bold">₹ {product.price}</span>
+                        <span className="text-sm text-muted-foreground line-through">₹ {product.originalPrice}</span>
+                        <span className="text-md font-bold text-foreground">₹ {product.price}</span>
                     </div>
                     <span className="text-sm text-green-600 font-bold">{discount}% off</span>
                 </div>
