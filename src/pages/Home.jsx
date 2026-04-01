@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import products from "../data/products.json";
-import ProductCard from "../components/products/ProductCard";
 import Header from "../components/common/Header";
 import { useDebounce } from "use-debounce";
 import Footer from "../components/common/Footer";
