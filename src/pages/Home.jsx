@@ -8,7 +8,6 @@ import Footer from "../components/common/Footer";
 import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import products from "../data/products.json";
 import ProductCard from "../components/ProductCard"; // Adjust import path if needed
 
 const PRODUCTS_PER_PAGE = 8;
