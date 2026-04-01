@@ -6,9 +6,75 @@ import ProductCard from "../components/products/ProductCard";
 import Header from "../components/common/Header";
 import { useDebounce } from "use-debounce";
 import Footer from "../components/common/Footer";
-import { FaFilter, FaSort } from "react-icons/fa";
-import { Input } from "../components/ui/input";
+import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import products from "../data/products.json";
+import ProductCard from "../components/ProductCard"; // Adjust import path if needed
+
+const PRODUCTS_PER_PAGE = 8;
+
+const useDelayedBoolean = (value, delay = 300) => {
+    const [visible, setVisible] = useState(false);
+    const timerRef = useRef();
+
+    useEffect(() => {
+        if (value) {
+            timerRef.current = setTimeout(() => setVisible(true), delay);
+        } else {
+            clearTimeout(timerRef.current);
+            setVisible(false);
+        }
+
+        return () => clearTimeout(timerRef.current);
+    }, [value, delay]);
+
+    return visible;
+};
+
+const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
+    const [, filters = {}] = queryKey;
+    const safeProducts = Array.isArray(products) ? products : [];
+    const searchTerm = (filters.searchTerm || "").toLowerCase();
+    const minPriceValue = filters.minPrice === "" || filters.minPrice == null ? null : Number(filters.minPrice);
+    const maxPriceValue = filters.maxPrice === "" || filters.maxPrice == null ? null : Number(filters.maxPrice);
+    const minRatingValue = Number(filters.minRating ?? 0);
+    const minReviewsValue = filters.minReviews === "" || filters.minReviews == null ? null : Number(filters.minReviews);
+    const sortBy = filters.sortBy || "default";
+
+    const filtered = safeProducts.filter((product) => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm) || product.description.toLowerCase().includes(searchTerm);
+        const matchesMinPrice = minPriceValue === null || product.price >= minPriceValue;
+        const matchesMaxPrice = maxPriceValue === null || product.price <= maxPriceValue;
+        const matchesRating = (product.rating || 4.3) >= minRatingValue;
+        const matchesReviews = minReviewsValue === null || (product.reviewsCount || 854) >= minReviewsValue;
+
+        return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesRating && matchesReviews;
+    });
+
+    const sorted = [...filtered];
+    if (sortBy === "price-asc") {
+        sorted.sort((a, b) => a.price - b.price);
+    } else if (sortBy === "price-desc") {
+        sorted.sort((a, b) => b.price - a.price);
+    } else if (sortBy === "rating-desc") {
+        sorted.sort((a, b) => (b.rating || 4.3) - (a.rating || 4.3));
+    } else if (sortBy === "name-asc") {
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "name-desc") {
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    const start = (pageParam - 1) * PRODUCTS_PER_PAGE;
+    const nextPageItems = sorted.slice(start, start + PRODUCTS_PER_PAGE);
+
+    return {
+        page: pageParam,
+        products: nextPageItems,
+        totalCount: sorted.length,
+        hasMore: start + PRODUCTS_PER_PAGE < sorted.length,
+    };
+};
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -30,7 +96,11 @@ const useDelayedBoolean = (value, delay = 500) => {
     return visible;
 };
 
-const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
+
+  const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
+    // Simulate network delay to make loading indicators visible
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
     const [, filters = {}] = queryKey;
     const safeProducts = Array.isArray(products) ? products : [];
     const searchWords = (filters.searchTerm || "").toLowerCase().split(' ').filter(Boolean);
@@ -90,10 +160,13 @@ export default function Home() {
     const [minReviews, setMinReviews] = useState("");
     const [sortBy, setSortBy] = useState("default");
 
-    const { ref, inView } = useInView();
+    const { ref, inView } = useInView({
+        /* Triggers the load 400px before the user actually reaches the bottom */
+        rootMargin: "400px",
+    });
 
     const queryFilters = useMemo(() => ({
-        searchTerm: debouncedSearchTerm,
+        searchTerm,
         minPrice,
         maxPrice,
         minRating,
@@ -140,11 +213,8 @@ export default function Home() {
                 setIsSortOpen(false);
             }
         };
-
         document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     return (
@@ -237,6 +307,11 @@ export default function Home() {
                         <div ref={ref} />
                         {isFetchingNextPage && <div className="text-center text-gray-500 text-lg py-10">Loading more...</div>}
                     </>
+                )}
+                {(hasNextPage || isFetchingNextPage) && (
+                    <div ref={ref} className="flex justify-center items-center py-10">
+                        <span className={`text-purple-600 font-semibold transition-opacity duration-150 ${showNextPageLoadingText ? "opacity-100" : "opacity-60"}`}>Loading...</span>
+                    </div>
                 )}
             </main>
 

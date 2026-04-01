@@ -44,4 +44,6 @@ const Button = React.forwardRef(({ className, variant, size, asChild = false, ..
 })
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+const iconActionButtonClass = "h-9 w-9 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/10 transition-colors focus-visible:ring-0 pointer-events-auto";
+
+export { Button, buttonVariants, iconActionButtonClass }

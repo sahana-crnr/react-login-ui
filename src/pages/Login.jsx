@@ -27,7 +27,6 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const loginUser = useAuthStore(state => state.loginUser);
-    const setShop = useShopStore(state => state.setShop);
 
     // 2. Initialize react-hook-form with the Zod resolver
     const {
@@ -51,8 +50,18 @@ export default function Login() {
             return;
         }
 
-        // Load the specific user's saved cart and wishlist
-        setShop(result.user.cart || [], result.user.wishlist || []);
+        // 4. Fetch the newly logged-in user from the auth store
+        const { currentUser } = useAuthStore.getState();
+        const { setCart, setWishlist } = useShopStore.getState();
+
+        // Use currentUser from state, or fallback to result.user if auth store uses it
+        const loggedInUser = currentUser || result.user;
+
+        // 5. Restore the specific user's saved cart and wishlist
+        if (loggedInUser) {
+            if (setCart) setCart(loggedInUser.cart || []);
+            if (setWishlist) setWishlist(loggedInUser.wishlist || []);
+        }
 
         toast.success(result.message, { duration: 5000 });
         console.log("Login submitted successfully:", data);
