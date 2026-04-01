@@ -13,7 +13,7 @@ export default function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const product = products.find((p) => p.id === parseInt(id));
-    
+
     const wishlist = useShopStore((state) => state.wishlist);
     const toggleWishlist = useShopStore((state) => state.toggleWishlist);
     const addToCart = useShopStore((state) => state.addToCart);
@@ -96,7 +96,7 @@ export default function ProductDetails() {
                         <div className="flex w-full gap-2 mt-auto">
                             <Button onClick={handleAddToCart} className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
                                 <FiShoppingCart /> ADD TO CART
-                            </Button> 
+                            </Button>
                             <Button className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
                                 <FaBolt /> BUY NOW
                             </Button>

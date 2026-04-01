@@ -1,7 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import products from "../data/products.json";
+import ProductCard from "../components/products/ProductCard";
 import Header from "../components/common/Header";
+import { useDebounce } from "use-debounce";
 import Footer from "../components/common/Footer";
 import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
@@ -73,8 +76,78 @@ const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
     };
 };
 
+const PRODUCTS_PER_PAGE = 8;
+
+const useDelayedBoolean = (value, delay = 500) => {
+    const [visible, setVisible] = useState(false);
+    const timerRef = useRef();
+
+    useEffect(() => {
+        if (value) {
+            timerRef.current = setTimeout(() => setVisible(true), delay);
+        } else {
+            clearTimeout(timerRef.current);
+            setVisible(false);
+        }
+
+        return () => clearTimeout(timerRef.current);
+    }, [value, delay]);
+
+    return visible;
+};
+
+
+  const fetchProductsPage = async ({ pageParam = 1, queryKey }) => {
+    // Simulate network delay to make loading indicators visible
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const [, filters = {}] = queryKey;
+    const safeProducts = Array.isArray(products) ? products : [];
+    const searchWords = (filters.searchTerm || "").toLowerCase().split(' ').filter(Boolean);
+    const minPriceValue = filters.minPrice === "" || filters.minPrice == null ? null : Number(filters.minPrice);
+    const maxPriceValue = filters.maxPrice === "" || filters.maxPrice == null ? null : Number(filters.maxPrice);
+    const minRatingValue = Number(filters.minRating ?? 0);
+    const minReviewsValue = filters.minReviews === "" || filters.minReviews == null ? null : Number(filters.minReviews);
+    const sortBy = filters.sortBy || "default";
+
+    const filtered = safeProducts.filter((product) => {
+        const productNameLower = product.name.toLowerCase();
+        const matchesSearch = searchWords.every(word => productNameLower.includes(word));
+        const matchesMinPrice = minPriceValue === null || product.price >= minPriceValue;
+        const matchesMaxPrice = maxPriceValue === null || product.price <= maxPriceValue;
+        const matchesRating = (product.rating || 4.3) >= minRatingValue;
+        const matchesReviews = minReviewsValue === null || (product.reviewsCount || 854) >= minReviewsValue;
+
+        return matchesSearch && matchesMinPrice && matchesMaxPrice && matchesRating && matchesReviews;
+    });
+
+    const sorted = [...filtered];
+    if (sortBy === "price-asc") {
+        sorted.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+    } else if (sortBy === "price-desc") {
+        sorted.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+    } else if (sortBy === "rating-desc") {
+        sorted.sort((a, b) => (b.rating || 4.3) - (a.rating || 4.3));
+    } else if (sortBy === "name-asc") {
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "name-desc") {
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    const start = (pageParam - 1) * PRODUCTS_PER_PAGE;
+    const nextPageItems = sorted.slice(start, start + PRODUCTS_PER_PAGE);
+
+    return {
+        page: pageParam,
+        products: nextPageItems,
+        totalCount: sorted.length,
+        hasMore: start + PRODUCTS_PER_PAGE < sorted.length,
+    };
+};
+
 export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
     const filterRef = useRef(null);
@@ -99,7 +172,7 @@ export default function Home() {
         minRating,
         minReviews,
         sortBy,
-    }), [searchTerm, minPrice, maxPrice, minRating, minReviews, sortBy]);
+    }), [debouncedSearchTerm, minPrice, maxPrice, minRating, minReviews, sortBy]);
 
     const {
         data,
@@ -110,6 +183,7 @@ export default function Home() {
     } = useInfiniteQuery({
         queryKey: ["products", queryFilters],
         queryFn: fetchProductsPage,
+        initialPageParam: 1,
         getNextPageParam: (lastPage) => {
             return lastPage.hasMore ? lastPage.page + 1 : undefined;
         },
@@ -121,7 +195,6 @@ export default function Home() {
     const totalFilteredCount = productPages[0]?.totalCount ?? 0;
     const isInitialLoading = isLoading && displayProducts.length === 0;
     const showInitialLoadingText = useDelayedBoolean(isInitialLoading);
-    const showNextPageLoadingText = useDelayedBoolean(isFetchingNextPage);
 
     // Handle infinite scroll using intersection observer
     useEffect(() => {
@@ -220,18 +293,20 @@ export default function Home() {
                 </div>
 
                 {/* Product Grid */}
-                {isInitialLoading ? (
-                    <div className="flex justify-center items-center py-20 bg-white rounded-2xl shadow-sm border border-gray-200">
-                        <span className={`text-purple-600 text-lg font-semibold transition-opacity duration-150 ${showInitialLoadingText ? "opacity-100" : "opacity-60"}`}>Loading...</span>
-                    </div>
-                ) : totalFilteredCount === 0 ? (
+                {isInitialLoading && showInitialLoadingText ? (
+                    <div className="text-center text-gray-500 text-lg py-20">Loading products...</div>
+                ) : displayProducts.length === 0 ? (
                     <div className="text-center text-gray-500 text-lg py-20 bg-white rounded-2xl shadow-sm border border-gray-200">No products found matching your criteria.</div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
-                        {displayProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+                            {displayProducts.map((product) => (
+                                <ProductCard key={product.id} product={product} />
+                            ))}
+                        </div>
+                        <div ref={ref} />
+                        {isFetchingNextPage && <div className="text-center text-gray-500 text-lg py-10">Loading more...</div>}
+                    </>
                 )}
                 {(hasNextPage || isFetchingNextPage) && (
                     <div ref={ref} className="flex justify-center items-center py-10">

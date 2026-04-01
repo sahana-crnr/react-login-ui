@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaSearch, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import useAuthStore from "../../store/useAuthStore";
 import useShopStore, { getCartTotalItems } from "../../store/useShopStore";
+import { useDebounce } from "use-debounce";
+import products from "../../data/products.json";
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import CartSheet from "./CartSheet";
 
 export default function Header({ searchTerm, setSearchTerm }) {
     const navigate = useNavigate();
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+    const searchContainerRef = useRef(null);
     const cartCount = useShopStore(getCartTotalItems);
     const openCart = useShopStore((state) => state.openCart);
 
@@ -28,19 +34,50 @@ export default function Header({ searchTerm, setSearchTerm }) {
         navigate("/", { replace: true });
     };
 
+    useEffect(() => {
+        if (debouncedSearchTerm && debouncedSearchTerm.trim().length > 0) {
+            const searchWords = debouncedSearchTerm.toLowerCase().split(' ').filter(Boolean);
+            const filteredProducts = products.filter(product => {
+                const productNameLower = product.name.toLowerCase();
+                return searchWords.every(word => productNameLower.includes(word));
+            }).slice(0, 5); // Limit to 5 suggestions
+            setSuggestions(filteredProducts);
+            setShowSuggestions(filteredProducts.length > 0);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    }, [debouncedSearchTerm]);
+
+    // Handle clicks outside to close suggestions
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleSuggestionClick = (productId) => {
+        navigate(`/product/${productId}`);
+        setShowSuggestions(false);
+    };
+
     return (
         <header className="bg-white shadow-md py-4 px-6 md:px-8 sticky top-0 z-50 w-full">
             <CartSheet />
             <div className="max-w-8xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                 <div className="flex items-center gap-4">
-                    <Sidebar /> 
+                    <Sidebar />
                     <div className="text-3xl font-extrabold text-purple-700 tracking-wide shrink-0">
                         ShopZone
                     </div>
                 </div>
 
                 {setSearchTerm && (
-                    <div className="relative w-full md:max-w-md lg:max-w-lg flex-1 rounded-2xl">
+                    <div ref={searchContainerRef} className="relative w-full md:max-w-md lg:max-w-lg flex-1 rounded-2xl">
                         <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
                             <FaSearch />
                         </span>
@@ -52,6 +89,7 @@ export default function Header({ searchTerm, setSearchTerm }) {
                             placeholder="Search products..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            onFocus={() => searchTerm && suggestions.length > 0 && setShowSuggestions(true)}
                             autoComplete="off"
                             className="pl-11 pr-10"
                         />
@@ -63,6 +101,21 @@ export default function Header({ searchTerm, setSearchTerm }) {
                             >
                                 <FaTimes />
                             </button>
+                        )}
+                        {showSuggestions && suggestions.length > 0 && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-lg z-50 overflow-hidden">
+                                <ul className="divide-y divide-gray-100">
+                                    {suggestions.map(product => (
+                                        <li key={product.id}
+                                            className="p-3 flex items-center gap-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                                            onMouseDown={(e) => { e.preventDefault(); handleSuggestionClick(product.id); }}
+                                        >
+                                            <img src={product.image?.startsWith('/') ? process.env.PUBLIC_URL + product.image : product.image} alt={product.name} className="w-10 h-10 object-contain rounded-md bg-gray-50 p-1" />
+                                            <span className="font-medium text-gray-700 text-sm">{product.name}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         )}
                     </div>
                 )}
