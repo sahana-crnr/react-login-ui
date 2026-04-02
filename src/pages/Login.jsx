@@ -84,7 +84,7 @@ export default function Login() {
                             type="email"
                             {...register("email")}
                             autoComplete="email"
-                            className={`mt-1 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             placeholder="Enter your email"
                         />
                         {errors.email && (
@@ -101,7 +101,7 @@ export default function Login() {
                                 type={showPassword ? 'text' : 'password'}
                                 {...register("password")}
                                 autoComplete="current-password"
-                                className={`mt-1 ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                                 placeholder="Enter your password"
                             />
                             <button

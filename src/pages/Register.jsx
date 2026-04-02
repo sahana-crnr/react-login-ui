@@ -76,7 +76,7 @@ export default function Register() {
                             type="email"
                             {...register("email")}
                             autoComplete="email"
-                            className={`mt-1 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             placeholder="Enter your email"
                         />
                         {errors.email && (
@@ -93,7 +93,7 @@ export default function Register() {
                                 type={showPassword ? 'text' : 'password'}
                                 {...register("password")}
                                 autoComplete="new-password"
-                                className={`mt-1 ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                                 placeholder="Enter your password"
                             />
                             <button
@@ -117,7 +117,7 @@ export default function Register() {
                             type="password"
                             {...register("confirmPassword")}
                             autoComplete="new-password"
-                            className={`mt-1 ${errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             placeholder="Confirm your password"
                         />
                         {errors.confirmPassword && (
