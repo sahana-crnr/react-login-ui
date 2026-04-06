@@ -1,8 +1,9 @@
-import { MouseEvent } from "react";
+import type { FC, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import toast from "react-hot-toast";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Button, iconActionButtonClass } from "./ui/button";
 import useShopStore from "../store/useShopStore";
 import { Product } from "../types/shop";
@@ -16,10 +17,13 @@ const HeartIcon = toIconComponent(FaHeart);
 const HeartOutlineIcon = toIconComponent(FaRegHeart);
 const ShareIcon = toIconComponent(FiShare2);
 
-function ProductCard({ product }: ProductCardProps) {
+const ProductCard: FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
   const originalPrice = product.originalPrice || Math.round(product.price * 1.35);
   const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
+  const productImageSrc = product.image?.startsWith("/")
+    ? process.env.PUBLIC_URL + product.image
+    : (product.image ?? "");
 
   const wishlist = useShopStore((state) => state.wishlist);
   const toggleWishlist = useShopStore((state) => state.toggleWishlist);
@@ -93,9 +97,10 @@ function ProductCard({ product }: ProductCardProps) {
           backgroundBlendMode: "overlay",
         }}
       >
-        <img
-          src={product.image?.startsWith("/") ? process.env.PUBLIC_URL + product.image : product.image}
+        <LazyLoadImage
+          src={productImageSrc}
           alt={product.name}
+          threshold={300}
           className="w-full h-48 object-contain"
         />
       </div>
@@ -126,6 +131,6 @@ function ProductCard({ product }: ProductCardProps) {
       </div>
     </div>
   );
-}
+};
 
 export default ProductCard;
