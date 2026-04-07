@@ -70,8 +70,8 @@ export default function Login() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-100 relative">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
+            <div className="bg-card p-8 rounded-2xl shadow-lg w-full max-w-md border border-border relative">
                 <h2 className="text-3xl font-bold text-center text-purple-900 mb-3">Login</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -84,7 +84,7 @@ export default function Login() {
                             type="email"
                             {...register("email")}
                             autoComplete="email"
-                            className={`mt-1 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                            className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                             placeholder="Enter your email"
                         />
                         {errors.email && (
@@ -101,12 +101,12 @@ export default function Login() {
                                 type={showPassword ? 'text' : 'password'}
                                 {...register("password")}
                                 autoComplete="current-password"
-                                className={`mt-1 ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                                 placeholder="Enter your password"
                             />
                             <button
                                 type="button"
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-purple-700"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-purple-700"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
                                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -118,7 +118,7 @@ export default function Login() {
                     </div>
 
                     <div className="flex justify-between items-center text-sm">
-                        <Label htmlFor="rememberMe" className="flex items-center space-x-2 font-normal text-gray-600 cursor-pointer">
+                        <Label htmlFor="rememberMe" className="flex items-center space-x-2 font-normal text-muted-foreground cursor-pointer">
                             <input id="rememberMe" name="rememberMe" type="checkbox" className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 accent-purple-600" />
                             <span>Remember me</span>
                         </Label>
@@ -135,7 +135,7 @@ export default function Login() {
                     </Button>
                 </form>
 
-                <p className="text-center text-gray-600 text-sm mt-6">
+                <p className="text-center text-muted-foreground text-sm mt-6">
                     Don't have an account? <Link to="/register" className="text-purple-600 font-bold hover:text-purple-800 transition">Sign up</Link>
                 </p>
             </div>
