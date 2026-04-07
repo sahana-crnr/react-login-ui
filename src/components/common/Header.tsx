@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import CartSheet from "./CartSheet";
 import useThemeStore from "../../store/useThemeStore";
-import useSearchStore from "../../store/useSearchStore";
+import useSearchStore from "../../utils/useSearchStore";
 import products from "../../data/products.json";
 import { Product } from "../../types/shop";
 import { toIconComponent } from "../../utils/icons";

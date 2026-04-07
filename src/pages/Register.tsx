@@ -18,6 +18,12 @@ const EyeSlashIcon = toIconComponent(FaEyeSlash);
 const registerSchema = z
   .object({
     email: z.string().min(1, { message: "Email is required" }).email({ message: "Invalid email address" }),
+    phone: z
+      .string()
+      .min(1, { message: "Phone number is required" })
+      .refine((value) => /^\d{10}$/.test(value), {
+        message: "Phone number must be 10 digits",
+      }),
     password: z
       .string()
       .min(1, { message: "Password is required" })
@@ -37,21 +43,32 @@ const Register: React.FC = () => {
   const registerUser = useAuthStore((state) => state.registerUser) as (
     email: string,
     password: string,
+    phone: string,
   ) => AuthActionResult;
 
   const {
     register,
     handleSubmit,
     setError,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
   });
 
+  const validateField = async (field: keyof RegisterFormValues) => {
+    await trigger(field);
+  };
+
+  const emailField = register("email");
+  const phoneField = register("phone");
+  const passwordField = register("password");
+  const confirmPasswordField = register("confirmPassword");
+
   const onSubmit = async (data: RegisterFormValues) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const result = registerUser(data.email, data.password);
+    const result = registerUser(data.email, data.password, data.phone);
 
     if (!result.success) {
       toast.error(result.message);
@@ -75,8 +92,12 @@ const Register: React.FC = () => {
             <Input
               id="email"
               type="email"
-              {...register("email")}
+              {...emailField}
               autoComplete="email"
+              onBlur={(event) => {
+                emailField.onBlur(event);
+                void validateField("email");
+              }}
               className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
                 errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
               }`}
@@ -88,13 +109,40 @@ const Register: React.FC = () => {
           </div>
 
           <div>
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              {...phoneField}
+              autoComplete="tel"
+              inputMode="numeric"
+              maxLength={10}
+              onBlur={(event) => {
+                phoneField.onBlur(event);
+                void validateField("phone");
+              }}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
+                errors.phone ? "border-red-500 focus-visible:ring-red-500" : ""
+              }`}
+              placeholder="Enter your phone number"
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-xs mt-1 font-medium">{errors.phone.message}</p>
+            )}
+          </div>
+
+          <div>
             <Label htmlFor="password">Password</Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                {...register("password")}
+                {...passwordField}
                 autoComplete="new-password"
+                onBlur={(event) => {
+                  passwordField.onBlur(event);
+                  void validateField("password");
+                }}
                 className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
                   errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
                 }`}
@@ -118,8 +166,12 @@ const Register: React.FC = () => {
             <Input
               id="confirmPassword"
               type="password"
-              {...register("confirmPassword")}
+              {...confirmPasswordField}
               autoComplete="new-password"
+              onBlur={(event) => {
+                confirmPasswordField.onBlur(event);
+                void validateField("confirmPassword");
+              }}
               className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
                 errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""
               }`}

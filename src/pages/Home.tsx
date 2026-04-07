@@ -9,7 +9,7 @@ import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import ProductCard from "../components/ProductCard";
-import useSearchStore from "../store/useSearchStore";
+import useSearchStore from "../utils/useSearchStore";
 import { Product } from "../types/shop";
 import { toIconComponent } from "../utils/icons";
 
@@ -238,8 +238,8 @@ const Home = () => {
                   setIsFilterOpen(false);
                 }}
                 className={`bg-card border text-foreground px-4 py-2 rounded-2xl flex items-center gap-2 hover:border-purple-600 hover:bg-muted/80 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium ${isSortOpen
-                    ? "border-purple-600 ring-2 ring-purple-500/20"
-                    : "border-border"
+                  ? "border-purple-600 ring-2 ring-purple-500/20"
+                  : "border-border"
                   }`}
               >
                 <SortIcon /> Sort By
@@ -252,8 +252,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "default"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Default
@@ -264,8 +264,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "price-asc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Price: Low to High
@@ -276,8 +276,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "price-desc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Price: High to Low
@@ -288,8 +288,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "rating-desc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Rating: High to Low
@@ -300,8 +300,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "name-asc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Name: A to Z
@@ -312,8 +312,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "name-desc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Name: Z to A
@@ -329,8 +329,8 @@ const Home = () => {
                   setIsSortOpen(false);
                 }}
                 className={`bg-card border text-foreground px-4 py-2 rounded-2xl flex items-center gap-2 hover:border-purple-600 hover:bg-muted/80 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium ${isFilterOpen
-                    ? "border-purple-600 ring-2 ring-purple-500/20"
-                    : "border-border"
+                  ? "border-purple-600 ring-2 ring-purple-500/20"
+                  : "border-border"
                   }`}
               >
                 <FilterIcon /> Filters

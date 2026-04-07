@@ -18,6 +18,7 @@ export interface CartItem extends Product {
 
 export interface UserProfile {
   email: string;
+  phone?: string;
   password: string;
   cart?: CartItem[];
   wishlist?: Product[];
@@ -78,7 +79,7 @@ export interface ShopStoreState {
 export interface AuthStoreState {
   currentUser: UserProfile | null;
   isLoggedIn: boolean;
-  registerUser: (email: string, password: string) => AuthActionResult;
+  registerUser: (email: string, password: string, phone: string) => AuthActionResult;
   loginUser: (email: string, password: string) => AuthActionResult;
   logoutUser: () => void;
   checkEmailExists: (email: string) => boolean;

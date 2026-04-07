@@ -10,13 +10,13 @@ const useAuthStore = create<AuthStoreState>()(
       currentUser: null,
       isLoggedIn: false,
 
-      registerUser: (email, password): AuthActionResult => {
+      registerUser: (email, password, phone): AuthActionResult => {
         const users = useUsersStore.getState().users;
         if (users.some((user) => user.email === email)) {
           return { success: false, message: "Email is already registered." };
         }
 
-        const newUser: UserProfile = { email, password, cart: [], wishlist: [] };
+        const newUser: UserProfile = { email, phone, password, cart: [], wishlist: [] };
         useUsersStore.getState().addUser(newUser);
 
         return { success: true, message: "Account created successfully!" };

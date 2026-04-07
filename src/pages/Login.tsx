@@ -35,10 +35,18 @@ const Login: React.FC = () => {
     register,
     handleSubmit,
     setError,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
+
+  const validateField = async (field: keyof LoginFormValues) => {
+    await trigger(field);
+  };
+
+  const emailField = register("email");
+  const passwordField = register("password");
 
   const onSubmit = async (data: LoginFormValues) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -81,8 +89,12 @@ const Login: React.FC = () => {
             <Input
               id="email"
               type="email"
-              {...register("email")}
+              {...emailField}
               autoComplete="email"
+              onBlur={(event) => {
+                emailField.onBlur(event);
+                void validateField("email");
+              }}
               className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
                 errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
               }`}
@@ -99,8 +111,12 @@ const Login: React.FC = () => {
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                {...register("password")}
+                {...passwordField}
                 autoComplete="current-password"
+                onBlur={(event) => {
+                  passwordField.onBlur(event);
+                  void validateField("password");
+                }}
                 className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
                   errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
                 }`}
