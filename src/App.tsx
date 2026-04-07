@@ -1,0 +1,39 @@
+import { Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import Home from "./pages/Home";
+import ProductDetails from "./pages/ProductDetails";
+import Wishlist from "./pages/Wishlist";
+import Cart from "./pages/Cart";
+import Account from "./pages/Account";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import useThemeStore from "./store/useThemeStore";
+
+function App() {
+  const isDark = useThemeStore((state) => state.isDark);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("dark", isDark);
+  }, [isDark]);
+
+  return (
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/home" element={<Home />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/account" element={<Account />} />
+      </Route>
+    </Routes>
+  );
+}
+
+export default App;
