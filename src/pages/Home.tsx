@@ -165,8 +165,8 @@ const Home = () => {
     [debouncedSearchTerm, minPrice, maxPrice, minRating, minReviews, sortBy],
   );
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-      useInfiniteQuery<ProductsPage, Error, InfiniteData<ProductsPage>, ProductsQueryKey>({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery<ProductsPage, Error, InfiniteData<ProductsPage>, ProductsQueryKey>({
       queryKey: ["products", queryFilters],
       queryFn: fetchProductsPage,
       initialPageParam: 1,
@@ -232,19 +232,18 @@ const Home = () => {
             </p>
 
             <div className="relative" ref={sortRef}>
-                            <button
-                                onClick={() => {
-                                    setIsSortOpen(!isSortOpen);
-                                    setIsFilterOpen(false);
-                                }}
-                                className={`bg-card border text-foreground px-4 py-2 rounded-2xl flex items-center gap-2 hover:border-purple-600 hover:bg-muted/80 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium ${
-                                    isSortOpen
-                                        ? "border-purple-600 ring-2 ring-purple-500/20"
-                                        : "border-border"
-                                }`}
-                            >
-                                <SortIcon /> Sort By
-                            </button>
+              <button
+                onClick={() => {
+                  setIsSortOpen(!isSortOpen);
+                  setIsFilterOpen(false);
+                }}
+                className={`bg-card border text-foreground px-4 py-2 rounded-2xl flex items-center gap-2 hover:border-purple-600 hover:bg-muted/80 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium ${isSortOpen
+                    ? "border-purple-600 ring-2 ring-purple-500/20"
+                    : "border-border"
+                  }`}
+              >
+                <SortIcon /> Sort By
+              </button>
               {isSortOpen && (
                 <div className="absolute top-full right-0 mt-3 w-52 bg-card p-3 rounded-2xl shadow-xl border border-border z-40 flex flex-col gap-1 text-sm font-medium">
                   <button
@@ -252,11 +251,10 @@ const Home = () => {
                       setSortBy("default");
                       setIsSortOpen(false);
                     }}
-                    className={`text-left px-3 py-2 rounded-xl transition-colors ${
-                      sortBy === "default"
+                    className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "default"
                         ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     Default
                   </button>
@@ -265,11 +263,10 @@ const Home = () => {
                       setSortBy("price-asc");
                       setIsSortOpen(false);
                     }}
-                    className={`text-left px-3 py-2 rounded-xl transition-colors ${
-                      sortBy === "price-asc"
+                    className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "price-asc"
                         ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     Price: Low to High
                   </button>
@@ -278,11 +275,10 @@ const Home = () => {
                       setSortBy("price-desc");
                       setIsSortOpen(false);
                     }}
-                    className={`text-left px-3 py-2 rounded-xl transition-colors ${
-                      sortBy === "price-desc"
+                    className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "price-desc"
                         ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     Price: High to Low
                   </button>
@@ -291,11 +287,10 @@ const Home = () => {
                       setSortBy("rating-desc");
                       setIsSortOpen(false);
                     }}
-                    className={`text-left px-3 py-2 rounded-xl transition-colors ${
-                      sortBy === "rating-desc"
+                    className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "rating-desc"
                         ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     Rating: High to Low
                   </button>
@@ -304,11 +299,10 @@ const Home = () => {
                       setSortBy("name-asc");
                       setIsSortOpen(false);
                     }}
-                    className={`text-left px-3 py-2 rounded-xl transition-colors ${
-                      sortBy === "name-asc"
+                    className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "name-asc"
                         ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     Name: A to Z
                   </button>
@@ -317,11 +311,10 @@ const Home = () => {
                       setSortBy("name-desc");
                       setIsSortOpen(false);
                     }}
-                    className={`text-left px-3 py-2 rounded-xl transition-colors ${
-                      sortBy === "name-desc"
+                    className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "name-desc"
                         ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     Name: Z to A
                   </button>
@@ -330,19 +323,18 @@ const Home = () => {
             </div>
 
             <div className="relative" ref={filterRef}>
-                            <button
-                                onClick={() => {
-                                    setIsFilterOpen(!isFilterOpen);
-                                    setIsSortOpen(false);
-                                }}
-                                className={`bg-card border text-foreground px-4 py-2 rounded-2xl flex items-center gap-2 hover:border-purple-600 hover:bg-muted/80 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium ${
-                                    isFilterOpen
-                                        ? "border-purple-600 ring-2 ring-purple-500/20"
-                                        : "border-border"
-                                }`}
-                            >
-                                <FilterIcon /> Filters
-                            </button>
+              <button
+                onClick={() => {
+                  setIsFilterOpen(!isFilterOpen);
+                  setIsSortOpen(false);
+                }}
+                className={`bg-card border text-foreground px-4 py-2 rounded-2xl flex items-center gap-2 hover:border-purple-600 hover:bg-muted/80 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium ${isFilterOpen
+                    ? "border-purple-600 ring-2 ring-purple-500/20"
+                    : "border-border"
+                  }`}
+              >
+                <FilterIcon /> Filters
+              </button>
 
               {isFilterOpen && (
                 <div className="absolute top-full right-0 mt-3 w-full max-w-sm sm:w-80 bg-card p-6 rounded-2xl shadow-xl border border-border z-40">
