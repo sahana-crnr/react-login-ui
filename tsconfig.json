@@ -1,14 +1,27 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "react-hook-form": ["src/types/shims/react-hook-form"],
-      "@hookform/resolvers/zod": ["src/types/shims/hookform-zod-resolver"],
-      "zod": ["src/types/shims/zod"]
+      "@/*": [
+        "src/*"
+      ],
+      "react-hook-form": [
+        "src/types/shims/react-hook-form"
+      ],
+      "@hookform/resolvers/zod": [
+        "src/types/shims/hookform-zod-resolver"
+      ],
+      "zod": [
+        "src/types/shims/zod"
+      ]
     },
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -22,5 +35,7 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
