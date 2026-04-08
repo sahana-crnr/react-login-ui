@@ -3,7 +3,6 @@ import { useInView } from "react-intersection-observer";
 import { QueryFunctionContext, useInfiniteQuery, InfiniteData } from "@tanstack/react-query";
 import products from "../data/products.json";
 import Header from "../components/common/Header";
-import { useDebounce } from "use-debounce";
 import Footer from "../components/common/Footer";
 import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
@@ -66,7 +65,7 @@ const fetchProductsPage = async ({
   pageParam = 1,
   queryKey,
 }: QueryFunctionContext<ProductsQueryKey>): Promise<ProductsPage> => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const [, filters] = queryKey;
   const safeProducts = Array.isArray(products) ? (products as Product[]) : [];
@@ -139,7 +138,6 @@ const fetchProductsPage = async ({
 
 const Home = () => {
   const searchTerm = useSearchStore((state) => state.searchTerm);
-  const [debouncedSearchTerm] = useDebounce<string>(searchTerm, 500);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
@@ -155,14 +153,14 @@ const Home = () => {
 
   const queryFilters = useMemo<ProductFilters>(
     () => ({
-      searchTerm: debouncedSearchTerm,
+      searchTerm,
       minPrice,
       maxPrice,
       minRating,
       minReviews,
       sortBy,
     }),
-    [debouncedSearchTerm, minPrice, maxPrice, minRating, minReviews, sortBy],
+    [searchTerm, minPrice, maxPrice, minRating, minReviews, sortBy],
   );
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
