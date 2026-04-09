@@ -8,6 +8,7 @@ import Footer from "../components/common/Footer";
 import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { Preloader } from "../components/ui/preloader";
 import ProductCard from "../components/ProductCard";
 import useSearchStore from "../store/useSearchStore";
 import { Product } from "../types/shop";
@@ -178,7 +179,7 @@ const Home = () => {
   const displayProducts = productPages.flatMap((page) => page.products);
   const totalFilteredCount = productPages[0]?.totalCount ?? 0;
   const isInitialLoading = isLoading && displayProducts.length === 0;
-  const showInitialLoadingText = useDelayedBoolean(isInitialLoading);
+  const showInitialLoader = useDelayedBoolean(isInitialLoading, 150);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -416,10 +417,16 @@ const Home = () => {
           </div>
         </div>
 
-        {isInitialLoading && showInitialLoadingText ? (
-          <div className="text-center text-muted-foreground text-lg py-20">
-            Loading products...
-          </div>
+        {isInitialLoading ? (
+          showInitialLoader ? (
+            <Preloader
+              title="Loading products"
+              description="Building your collection view."
+              className="mx-auto"
+            />
+          ) : (
+            <div className="min-h-[22rem]" />
+          )
         ) : displayProducts.length === 0 ? (
           <div className="text-center text-muted-foreground text-lg py-20 bg-card rounded-2xl shadow-sm border border-border">
             No products found matching your criteria.
@@ -433,8 +440,8 @@ const Home = () => {
             </div>
             <div ref={ref} />
             {isFetchingNextPage && (
-              <div className="text-center text-purple-600 text-lg py-10">
-                Loading more...
+              <div className="py-8">
+                <Preloader compact title="Loading more" className="mx-auto" />
               </div>
             )}
           </>
