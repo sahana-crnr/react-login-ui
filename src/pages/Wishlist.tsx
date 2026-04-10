@@ -33,7 +33,7 @@ const Wishlist: React.FC = () => {
         {wishlistItems.length === 0 ? (
           <div className="text-center py-20 flex flex-col items-center justify-center">
                     <HeartBrokenIcon className="text-6xl mb-4 text-muted-foreground opacity-70" />
-            <p className="text-muted-foreground text-lg opacity-70">Your wishlist is currently empty.</p>
+            <p className="text-muted-foreground text-lg opacity-70">My wishlist is currently empty.</p>
             <Link to="/home">
               <Button className="mt-6 bg-purple-600 hover:bg-purple-700">Continue Shopping</Button>
             </Link>

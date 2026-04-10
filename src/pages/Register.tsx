@@ -17,7 +17,12 @@ const EyeSlashIcon = toIconComponent(FaEyeSlash);
 
 const registerSchema = z
   .object({
+    name: z.string().min(1, { message: "Name is required" }),
     email: z.string().min(1, { message: "Email is required" }).email({ message: "Invalid email address" }),
+    phone: z
+      .string()
+      .min(1, { message: "Phone number is required" })
+      .refine((value) => /^\d{10}$/.test(value), { message: "Phone number must be 10 digits" }),
     password: z
       .string()
       .min(1, { message: "Password is required" })
@@ -29,7 +34,13 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type RegisterFormValues = {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+};
 
 const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +48,8 @@ const Register: React.FC = () => {
   const registerUser = useAuthStore((state) => state.registerUser) as (
     email: string,
     password: string,
+    phone: string,
+    name: string,
   ) => AuthActionResult;
 
   const {
@@ -45,13 +58,22 @@ const Register: React.FC = () => {
     setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(registerSchema) as any,
+    // @ts-ignore - Bypass deep type instantiation TS error
+    mode: "onTouched",
   });
 
+  const nameField = register("name");
+  const emailField = register("email");
+  const phoneField = register("phone");
+  const passwordField = register("password");
+  const confirmPasswordField = register("confirmPassword");
   const onSubmit = async (data: RegisterFormValues) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const result = registerUser(data.email, data.password);
+    const result = registerUser(data.email, data.password, data.phone, data.name);
+
 
     if (!result.success) {
       toast.error(result.message);
@@ -71,19 +93,49 @@ const Register: React.FC = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
+            <Label htmlFor="name">Full Name</Label>
+            <Input
+              id="name"
+              type="text"
+              {...nameField}
+          
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.name != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
+              placeholder="Enter your full name"
+            />
+            {errors.name != null && (
+              <p className="text-red-500 text-xs mt-1 font-medium">{errors.name.message}</p>
+            )}
+          </div>
+          <div>
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
-              {...register("email")}
-              autoComplete="email"
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
-              }`}
+              {...emailField}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.email != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
               placeholder="Enter your email"
             />
-            {errors.email && (
+            {errors.email != null && (
               <p className="text-red-500 text-xs mt-1 font-medium">{errors.email.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              {...phoneField}
+              inputMode="numeric"
+              maxLength={10}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.phone != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
+              placeholder="Enter your phone number"
+            />
+            {errors.phone != null && (
+              <p className="text-red-500 text-xs mt-1 font-medium">{errors.phone.message}</p>
             )}
           </div>
 
@@ -93,11 +145,9 @@ const Register: React.FC = () => {
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                {...register("password")}
-                autoComplete="new-password"
-                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                  errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
+                {...passwordField}
+                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.password != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                  }`}
                 placeholder="Enter your password"
               />
               <button
@@ -108,7 +158,7 @@ const Register: React.FC = () => {
                 {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
               </button>
             </div>
-            {errors.password && (
+            {errors.password != null && (
               <p className="text-red-500 text-xs mt-1 font-medium">{errors.password.message}</p>
             )}
           </div>
@@ -118,14 +168,12 @@ const Register: React.FC = () => {
             <Input
               id="confirmPassword"
               type="password"
-              {...register("confirmPassword")}
-              autoComplete="new-password"
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""
-              }`}
+              {...confirmPasswordField}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.confirmPassword != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
               placeholder="Confirm your password"
             />
-            {errors.confirmPassword && (
+            {errors.confirmPassword != null && (
               <p className="text-red-500 text-xs mt-1 font-medium">{errors.confirmPassword.message}</p>
             )}
           </div>

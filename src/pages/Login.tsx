@@ -21,7 +21,10 @@ const loginSchema = z.object({
   password: z.string().min(1, { message: "Password is required" }).min(6, { message: "Password must be at least 6 characters long" }),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,9 +40,15 @@ const Login: React.FC = () => {
     setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(loginSchema) as any,
+    // @ts-ignore - Bypass deep type instantiation TS error
+    mode: "onTouched",
   });
 
+
+  const emailField = register("email");
+  const passwordField = register("password");
   const onSubmit = async (data: LoginFormValues) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -81,11 +90,9 @@ const Login: React.FC = () => {
             <Input
               id="email"
               type="email"
-              {...register("email")}
-              autoComplete="email"
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
-              }`}
+              {...emailField}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
               placeholder="Enter your email"
             />
             {errors.email && (
@@ -99,11 +106,9 @@ const Login: React.FC = () => {
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                {...register("password")}
-                autoComplete="current-password"
-                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                  errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
+                {...passwordField}
+                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
+                  }`}
                 placeholder="Enter your password"
               />
               <button

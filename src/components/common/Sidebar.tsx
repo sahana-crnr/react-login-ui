@@ -126,7 +126,7 @@ const Sidebar = () => {
               className="w-full justify-start text-base h-12 gap-4"
             >
               <UserCircleIcon className="h-5 w-5" />
-              <span>Your Account</span>
+              <span>My Account</span>
             </Button>
             <Button
               variant="destructive"

@@ -30,7 +30,7 @@ const Account: React.FC = () => {
       <div className="w-full max-w-2xl">
         <div className="flex items-center gap-4 mb-8">
           <UserCircleIcon className="text-5xl text-purple-600" />
-          <h1 className="text-3xl font-bold text-foreground">Your Account</h1>
+          <h1 className="text-3xl font-bold text-foreground">My Account</h1>
         </div>
 
         {currentUser ? (

@@ -61,7 +61,7 @@ const ForgotPassword: React.FC = () => {
               type="email"
               {...register("email")}
               autoComplete="email"
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}`}
               placeholder="Enter your email"
             />
             {errors.email && (
