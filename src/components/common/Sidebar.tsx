@@ -32,8 +32,7 @@ const CategoryIcon = toIconComponent(MdCategory);
 const Sidebar = () => {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const navigate = useNavigate();
-  const wishlist = useShopStore((state) => state.wishlist);
-  const wishlistCount = wishlist.length;
+  const wishlistCount = useShopStore((state) => state.wishlist.length);
 
   const toggleCategories = () => setIsCategoryOpen((current) => !current);
 
