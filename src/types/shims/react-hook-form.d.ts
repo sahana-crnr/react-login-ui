@@ -29,6 +29,7 @@ declare module "react-hook-form" {
   export interface UseFormProps<TFieldValues extends FieldValues> {
     resolver?: unknown;
     defaultValues?: Partial<TFieldValues>;
+    mode?: string;
   }
 
   export interface UseFormReturn<TFieldValues extends FieldValues> {
@@ -37,6 +38,7 @@ declare module "react-hook-form" {
       onValid: SubmitHandler<TFieldValues>,
     ) => (event?: unknown) => Promise<void>;
     setError: (name: FieldPath<TFieldValues>, error: FieldError) => void;
+    trigger: (name?: FieldPath<TFieldValues>) => Promise<boolean>;
     formState: {
       errors: FieldErrors<TFieldValues>;
       isSubmitting: boolean;

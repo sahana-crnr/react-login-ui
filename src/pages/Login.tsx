@@ -38,6 +38,7 @@ const Login: React.FC = () => {
     register,
     handleSubmit,
     setError,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -21,7 +21,10 @@ const ShoppingCartIcon = toIconComponent(FiShoppingCart);
 
 export default function CartSheet() {
   const navigate = useNavigate();
-  const { isCartOpen, closeCart, cart, removeFromCart } = useShopStore();
+  const isCartOpen = useShopStore((state) => state.isCartOpen);
+  const closeCart = useShopStore((state) => state.closeCart);
+  const cart = useShopStore((state) => state.cart);
+  const removeFromCart = useShopStore((state) => state.removeFromCart);
   const cartTotalPrice = useShopStore(getCartTotalPrice);
   const cartTotalItems = useShopStore(getCartTotalItems);
 

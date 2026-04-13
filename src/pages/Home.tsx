@@ -3,13 +3,13 @@ import { useInView } from "react-intersection-observer";
 import { QueryFunctionContext, useInfiniteQuery, InfiniteData } from "@tanstack/react-query";
 import products from "../data/products.json";
 import Header from "../components/common/Header";
-import { useDebounce } from "use-debounce";
 import Footer from "../components/common/Footer";
 import { FaSort, FaFilter } from "react-icons/fa";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { Preloader } from "../components/ui/preloader";
 import ProductCard from "../components/ProductCard";
-import useSearchStore from "../store/useSearchStore";
+import useSearchStore from "../utils/useSearchStore";
 import { Product } from "../types/shop";
 import { toIconComponent } from "../utils/icons";
 import { Preloader } from "../components/ui/preloader";
@@ -67,7 +67,7 @@ const fetchProductsPage = async ({
   pageParam = 1,
   queryKey,
 }: QueryFunctionContext<ProductsQueryKey>): Promise<ProductsPage> => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const [, filters] = queryKey;
   const safeProducts = Array.isArray(products) ? (products as Product[]) : [];
@@ -140,7 +140,6 @@ const fetchProductsPage = async ({
 
 const Home = () => {
   const searchTerm = useSearchStore((state) => state.searchTerm);
-  const [debouncedSearchTerm] = useDebounce<string>(searchTerm, 500);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement | null>(null);
@@ -156,14 +155,14 @@ const Home = () => {
 
   const queryFilters = useMemo<ProductFilters>(
     () => ({
-      searchTerm: debouncedSearchTerm,
+      searchTerm,
       minPrice,
       maxPrice,
       minRating,
       minReviews,
       sortBy,
     }),
-    [debouncedSearchTerm, minPrice, maxPrice, minRating, minReviews, sortBy],
+    [searchTerm, minPrice, maxPrice, minRating, minReviews, sortBy],
   );
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -179,7 +178,7 @@ const Home = () => {
   const displayProducts = productPages.flatMap((page) => page.products);
   const totalFilteredCount = productPages[0]?.totalCount ?? 0;
   const isInitialLoading = isLoading && displayProducts.length === 0;
-  const showInitialLoadingText = useDelayedBoolean(isInitialLoading);
+  const showInitialLoader = useDelayedBoolean(isInitialLoading, 150);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -239,8 +238,8 @@ const Home = () => {
                   setIsFilterOpen(false);
                 }}
                 className={`bg-card border text-foreground px-4 py-2 rounded-2xl flex items-center gap-2 hover:border-purple-600 hover:bg-muted/80 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium ${isSortOpen
-                    ? "border-purple-600 ring-2 ring-purple-500/20"
-                    : "border-border"
+                  ? "border-purple-600 ring-2 ring-purple-500/20"
+                  : "border-border"
                   }`}
               >
                 <SortIcon /> Sort By
@@ -253,8 +252,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "default"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Default
@@ -265,8 +264,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "price-asc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Price: Low to High
@@ -277,8 +276,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "price-desc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Price: High to Low
@@ -289,8 +288,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "rating-desc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Rating: High to Low
@@ -301,8 +300,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "name-asc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Name: A to Z
@@ -313,8 +312,8 @@ const Home = () => {
                       setIsSortOpen(false);
                     }}
                     className={`text-left px-3 py-2 rounded-xl transition-colors ${sortBy === "name-desc"
-                        ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "bg-purple-100 dark:bg-purple-900/40 font-bold text-purple-700 dark:text-purple-400"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                   >
                     Name: Z to A
@@ -330,8 +329,8 @@ const Home = () => {
                   setIsSortOpen(false);
                 }}
                 className={`bg-card border text-foreground px-4 py-2 rounded-2xl flex items-center gap-2 hover:border-purple-600 hover:bg-muted/80 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium ${isFilterOpen
-                    ? "border-purple-600 ring-2 ring-purple-500/20"
-                    : "border-border"
+                  ? "border-purple-600 ring-2 ring-purple-500/20"
+                  : "border-border"
                   }`}
               >
                 <FilterIcon /> Filters

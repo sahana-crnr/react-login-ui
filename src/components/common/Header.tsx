@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaSearch, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { FiMoon, FiShoppingCart, FiSun } from "react-icons/fi";
 import { useDebounce } from "use-debounce";
@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import CartSheet from "./CartSheet";
 import useThemeStore from "../../store/useThemeStore";
-import useSearchStore from "../../store/useSearchStore";
+import useSearchStore from "../../utils/useSearchStore";
 import products from "../../data/products.json";
 import { Product } from "../../types/shop";
 import { toIconComponent } from "../../utils/icons";
@@ -27,10 +27,14 @@ export default function Header() {
   const navigate = useNavigate();
   const searchTerm = useSearchStore((state) => state.searchTerm);
   const setSearchTerm = useSearchStore((state) => state.setSearchTerm);
+  const [searchInput, setSearchInput] = useState(searchTerm);
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const skipNextSuggestionUpdateRef = useRef(false);
+  const [debouncedSearchTerm] = useDebounce(searchInput, 400);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
+  const location = useLocation();
   const cartCount = useShopStore(getCartTotalItems);
   const openCart = useShopStore((state) => state.openCart);
   const isDark = useThemeStore((state) => state.isDark);
@@ -49,6 +53,21 @@ export default function Header() {
   };
 
   useEffect(() => {
+    setSearchInput(searchTerm);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    setSearchTerm(debouncedSearchTerm);
+  }, [debouncedSearchTerm, setSearchTerm]);
+
+  useEffect(() => {
+    if (skipNextSuggestionUpdateRef.current) {
+      skipNextSuggestionUpdateRef.current = false;
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
     if (debouncedSearchTerm.trim().length > 0) {
       const searchWords = debouncedSearchTerm.toLowerCase().split(" ").filter(Boolean);
       const filteredProducts = productList
@@ -59,12 +78,19 @@ export default function Header() {
         .slice(0, 5);
 
       setSuggestions(filteredProducts);
-      setShowSuggestions(filteredProducts.length > 0);
+      setShowSuggestions(isSearchFocused && filteredProducts.length > 0);
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
     }
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, isSearchFocused]);
+
+  useEffect(() => {
+    setSuggestions([]);
+    setShowSuggestions(false);
+    setIsSearchFocused(false);
+    skipNextSuggestionUpdateRef.current = false;
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -81,8 +107,11 @@ export default function Header() {
   }, []);
 
   const handleSuggestionClick = (productId: number) => {
-    navigate(`/product/${productId}`);
+    skipNextSuggestionUpdateRef.current = true;
+    setSuggestions([]);
     setShowSuggestions(false);
+    setIsSearchFocused(false);
+    navigate(`/product/${productId}`);
   };
 
   return (
@@ -108,16 +137,35 @@ export default function Header() {
             name="search"
             type="text"
             placeholder="Search products..."
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            onFocus={() => searchTerm && suggestions.length > 0 && setShowSuggestions(true)}
+            value={searchInput}
+            onChange={(event) => {
+              skipNextSuggestionUpdateRef.current = false;
+              setSearchInput(event.target.value);
+            }}
+            onFocus={() => {
+              setIsSearchFocused(true);
+              if (searchInput && suggestions.length > 0) {
+                setShowSuggestions(true);
+              }
+            }}
+            onBlur={() => {
+              setIsSearchFocused(false);
+              setShowSuggestions(false);
+            }}
             autoComplete="off"
             className="pl-11 pr-10"
           />
-          {searchTerm && (
+          {searchInput && (
             <button
               type="button"
-              onClick={() => setSearchTerm("")}
+              onClick={() => {
+                skipNextSuggestionUpdateRef.current = false;
+                setSearchInput("");
+                setSearchTerm("");
+                setSuggestions([]);
+                setShowSuggestions(false);
+                setIsSearchFocused(false);
+              }}
               className="absolute inset-y-0 right-0 flex items-center pr-4 text-muted-foreground hover:text-foreground transition focus:outline-none"
               title="Clear search"
             >
@@ -125,12 +173,12 @@ export default function Header() {
             </button>
           )}
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-2xl shadow-lg z-50 overflow-hidden text-muted-foreground">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-popover text-popover-foreground border border-border rounded-2xl shadow-lg z-50 overflow-hidden">
               <ul className="divide-y divide-border">
                 {suggestions.map((product) => (
                   <li
                     key={product.id}
-                    className="p-3 flex items-center gap-4 cursor-pointer hover:bg-muted/60 transition-colors"
+                    className="p-3 flex items-center gap-4 cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground"
                     onMouseDown={(event) => {
                       event.preventDefault();
                       handleSuggestionClick(product.id);
@@ -145,7 +193,7 @@ export default function Header() {
                       alt={product.name}
                       className="w-10 h-10 object-contain rounded-md bg-muted/30 p-1"
                     />
-                    <span className="font-medium text-muted-foreground text-sm">
+                    <span className="font-medium text-sm">
                       {product.name}
                     </span>
                   </li>

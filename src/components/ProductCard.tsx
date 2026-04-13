@@ -25,10 +25,10 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
     ? process.env.PUBLIC_URL + product.image
     : (product.image ?? "");
 
-  const wishlist = useShopStore((state) => state.wishlist);
+  const isWishlisted = useShopStore((state) =>
+    state.wishlist.some((item) => item.id === product.id),
+  );
   const toggleWishlist = useShopStore((state) => state.toggleWishlist);
-
-  const isWishlisted = wishlist.some((item) => item.id === product.id);
 
   const handleWishlist = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
