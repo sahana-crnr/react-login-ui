@@ -55,7 +55,7 @@ export function Preloader({
                             "absolute inset-0 rounded-full motion-reduce:animate-none",
                             compact ? "m-3" : "m-4",
                         )}
-                        style={{ animation: "rb-orbit 1.4s linear infinite" }}
+                        style={{ animation: "rb-orbit 1.2s linear infinite" }}
                     >
                         <span
                             className={cn(

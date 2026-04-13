@@ -12,6 +12,7 @@ import ProductCard from "../components/ProductCard";
 import useSearchStore from "../store/useSearchStore";
 import { Product } from "../types/shop";
 import { toIconComponent } from "../utils/icons";
+import { Preloader } from "../components/ui/preloader";
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -417,9 +418,7 @@ const Home = () => {
         </div>
 
         {isInitialLoading && showInitialLoadingText ? (
-          <div className="text-center text-muted-foreground text-lg py-20">
-            Loading products...
-          </div>
+          <Preloader />
         ) : displayProducts.length === 0 ? (
           <div className="text-center text-muted-foreground text-lg py-20 bg-card rounded-2xl shadow-sm border border-border">
             No products found matching your criteria.
@@ -433,9 +432,7 @@ const Home = () => {
             </div>
             <div ref={ref} />
             {isFetchingNextPage && (
-              <div className="text-center text-purple-600 text-lg py-10">
-                Loading more...
-              </div>
+              <Preloader compact title="Loading more..." />
             )}
           </>
         )}
