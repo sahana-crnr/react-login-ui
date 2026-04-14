@@ -38,12 +38,9 @@ const Login: React.FC = () => {
     register,
     handleSubmit,
     setError,
-    trigger,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(loginSchema) as any,
-    // @ts-ignore - Bypass deep type instantiation TS error
+    resolver: zodResolver(loginSchema),
     mode: "onTouched",
   });
 

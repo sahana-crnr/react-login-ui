@@ -15,6 +15,12 @@ const MinusIcon = toIconComponent(FaMinus);
 const PlusIcon = toIconComponent(FaPlus);
 const ShoppingCartIcon = toIconComponent(FiShoppingCart);
 
+const quantityButtonClass =
+  "flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-purple-500 hover:bg-purple-50 hover:text-purple-700 active:translate-y-0 active:scale-95 dark:bg-muted/40 dark:hover:bg-purple-500/20 dark:hover:text-purple-300";
+
+const quantityContainerClass =
+  "flex items-center gap-2 rounded-full border border-border bg-card px-2 py-1.5 shadow-sm transition-all duration-200 hover:border-purple-300 dark:bg-muted/20";
+
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const cartItems = useShopStore((state) => state.cart) as CartItem[];
@@ -66,10 +72,10 @@ const Cart: React.FC = () => {
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-card p-4 rounded-2xl shadow-sm border border-border flex flex-col sm:flex-row items-center gap-4"
+                  className="group bg-card p-4 rounded-2xl shadow-sm border border-border flex flex-col sm:flex-row items-center gap-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   <div
-                    className="w-24 h-24 flex-shrink-0 bg-muted/60 border border-border rounded-xl p-2 cursor-pointer"
+                    className="w-24 h-24 flex-shrink-0 bg-muted/60 border border-border rounded-xl p-2 cursor-pointer transition-transform duration-300 group-hover:scale-[1.03]"
                     onClick={() => navigate(`/product/${item.id}`)}
                   >
                     <img
@@ -91,44 +97,52 @@ const Cart: React.FC = () => {
                   </div>
 
                   <div className="flex items-center justify-center gap-4 mt-2 sm:mt-0">
-                    <div className="flex items-center bg-muted/60 border border-border rounded-lg p-1">
-                        <button
-                          onClick={() => updateQuantity(item.id, -1)}
-                          className="p-2 text-muted-foreground hover:text-purple-600 hover:bg-muted/70 rounded-md transition-colors"
-                        >
-                          <MinusIcon size={12} />
-                        </button>
-                      <span className="w-8 text-center font-semibold text-foreground">{item.quantity}</span>
+                    <div className={quantityContainerClass}>
                       <button
-                          onClick={() => updateQuantity(item.id, 1)}
-                          className="p-2 text-muted-foreground hover:text-purple-600 hover:bg-muted/70 rounded-md transition-colors"
-                        >
-                          <PlusIcon size={12} />
-                        </button>
+                        type="button"
+                        onClick={() => updateQuantity(item.id, -1)}
+                        className={quantityButtonClass}
+                        aria-label={`Decrease quantity of ${item.name}`}
+                      >
+                        <MinusIcon size={12} />
+                      </button>
+                      <span className="min-w-8 px-1 text-center text-sm font-bold text-foreground tabular-nums">
+                        {item.quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.id, 1)}
+                        className={quantityButtonClass}
+                        aria-label={`Increase quantity of ${item.name}`}
+                      >
+                        <PlusIcon size={12} />
+                      </button>
                     </div>
-                            <button
-                              onClick={() => removeItem(item.id)}
-                              className="text-red-500 hover:bg-red-50 p-3 rounded-full transition-colors"
-                              title="Remove"
-                            >
-                              <TrashIcon />
-                            </button>
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.id)}
+                      className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background text-red-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:translate-y-0 active:scale-95 dark:bg-muted/20 dark:hover:border-red-500/40 dark:hover:bg-red-500/10"
+                      title="Remove"
+                      aria-label={`Remove ${item.name} from cart`}
+                    >
+                      <TrashIcon />
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="w-full lg:w-80 h-fit bg-card p-6 rounded-2xl shadow-sm border border-border flex flex-col gap-4">
+            <div className="w-full lg:w-80 h-fit bg-card p-6 rounded-2xl shadow-sm border border-border flex flex-col gap-4 transition-all duration-300 hover:shadow-lg">
               <h2 className="text-xl font-bold text-foreground border-b border-border pb-4">Order Summary</h2>
 
               <div className="flex flex-col gap-2 border-b pb-4">
                 <label className="text-sm font-medium">Apply Coupon</label>
                 {discountCode ? (
-                  <div className="flex justify-between items-center bg-green-50 text-green-700 px-3 py-2 rounded-xl border border-green-200">
+                  <div className="flex justify-between items-center bg-green-50 text-green-700 px-3 py-2 rounded-xl border border-green-200 dark:bg-green-500/10 dark:text-green-300 dark:border-green-500/20">
                     <span className="font-bold text-sm">{discountCode} Applied</span>
                     <button
                       onClick={removeDiscount}
-                      className="text-red-500 text-sm font-bold hover:underline"
+                      className="text-red-500 text-sm font-bold hover:underline dark:text-red-300"
                     >
                       Remove
                     </button>
@@ -140,9 +154,12 @@ const Cart: React.FC = () => {
                       placeholder="Enter Code (e.g. SAVE10)"
                       value={couponInput}
                       onChange={handleCouponChange}
-                      className="h-10 text-sm uppercase"
+                      className="h-10 text-sm uppercase bg-background border-border text-foreground shadow-sm"
                     />
-              <Button onClick={handleApplyCoupon} className="bg-gray-900 hover:bg-gray-800 text-sm h-10">
+                    <Button
+                      onClick={handleApplyCoupon}
+                      className="h-10 shrink-0 bg-gray-900 text-white hover:bg-gray-800 dark:bg-purple-600 dark:hover:bg-purple-500"
+                    >
                       Apply
                     </Button>
                   </div>

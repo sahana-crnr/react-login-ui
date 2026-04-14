@@ -56,12 +56,9 @@ const Register: React.FC = () => {
     register,
     handleSubmit,
     setError,
-    trigger,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(registerSchema) as any,
-    // @ts-ignore - Bypass deep type instantiation TS error
+    resolver: zodResolver(registerSchema),
     mode: "onTouched",
   });
 
@@ -114,13 +111,6 @@ const Register: React.FC = () => {
               id="email"
               type="email"
               {...emailField}
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.email != null ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
-              autoComplete="email"
-              onBlur={(event) => {
-                emailField.onBlur(event);
-                void validateField("email");
-              }}
               className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
                 errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
               }`}
