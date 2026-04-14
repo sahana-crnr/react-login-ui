@@ -48,14 +48,14 @@ const Cart: React.FC = () => {
         <div className="mb-8 border-b border-border pb-4">
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">Shopping Cart</h1>
           <p className="text-muted-foreground font-medium mt-1">
-            {cartTotalItems} {cartTotalItems === 1 ? "Item" : "Items"} in your cart
+            {cartTotalItems} {cartTotalItems === 1 ? "Item" : "Items"} in my cart
           </p>
         </div>
 
         {cartItems.length === 0 ? (
           <div className="text-center py-20 flex flex-col items-center justify-center">
             <ShoppingCartIcon className="text-6xl mb-4 text-muted-foreground opacity-70" />
-            <p className="text-muted-foreground text-lg opacity-70">Your cart is currently empty.</p>
+            <p className="text-muted-foreground text-lg opacity-70">My cart is currently empty.</p>
             <Link to="/home">
               <Button className="mt-6 bg-purple-600 hover:bg-purple-700">Continue Shopping</Button>
             </Link>

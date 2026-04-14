@@ -101,39 +101,39 @@ const ProductDetails: React.FC = () => {
         </div>
 
         <div className="max-w-[1200px] mx-auto bg-card flex flex-col md:flex-row shadow-sm rounded-2xl border border-border">
-          <div className="w-full md:w-2/5 p-4 md:p-6 border-r border-border flex flex-col items-center">
-            <div className="relative w-full h-80 md:h-96 flex justify-center items-center p-4 border border-border rounded-sm mb-4">
-              <img
-                src={product.image?.startsWith("/") ? process.env.PUBLIC_URL + product.image : product.image}
-                alt={product.name}
-                className="max-w-full max-h-full object-contain hover:scale-105 transition-transform duration-300"
-              />
+          <div className="relative w-full md:w-2/5 p-4 md:p-6 border-r border-border flex flex-col items-center">
 
-              <div className="absolute top-3 right-3 flex flex-col gap-3">
-                                <button
-                                    onClick={handleWishlist}
-                                    className="bg-card p-2.5 rounded-full shadow-sm border border-border text-muted-foreground hover:text-red-500 hover:bg-muted/70 transition-colors"
-                                    title="Wishlist"
-                                >
-                                    {isWishlisted ? <HeartIcon className="text-red-500 text-xl" /> : <HeartOutlineIcon className="text-xl" />}
-                                </button>
-                    <button
-                        onClick={handleShare}
-                        className="bg-card p-2.5 rounded-full shadow-sm border border-border text-muted-foreground hover:text-blue-600 hover:bg-muted/70 transition-colors"
-                        title="Share"
-                    >
-                        <ShareIcon className="text-xl" />
-                    </button>
-                </div>
+            <img
+              src={product.image?.startsWith("/") ? process.env.PUBLIC_URL + product.image : product.image}
+              alt={product.name}
+              className="max-w-full max-h-full object-contain hover:scale-105 transition-transform duration-300 mb-6"
+            />
+
+            <div className="absolute top-3 right-3 flex flex-col gap-3">
+              <button
+                onClick={handleWishlist}
+                className="bg-card p-2.5 rounded-full shadow-sm border border-border text-muted-foreground hover:text-red-500 hover:bg-muted/70 transition-colors"
+                title="Wishlist"
+              >
+                {isWishlisted ? <HeartIcon className="text-red-500 text-xl" /> : <HeartOutlineIcon className="text-xl" />}
+              </button>
+              <button
+                onClick={handleShare}
+                className="bg-card p-2.5 rounded-full shadow-sm border border-border text-muted-foreground hover:text-blue-600 hover:bg-muted/70 transition-colors"
+                title="Share"
+              >
+                <ShareIcon className="text-xl" />
+              </button>
             </div>
 
+
             <div className="flex w-full gap-2 mt-auto">
-                            <Button onClick={handleAddToCart} className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
-                                <ShoppingCartIcon /> ADD TO CART
-                            </Button>
-                            <Button className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
-                                <BoltIcon /> BUY NOW
-                            </Button>
+              <Button onClick={handleAddToCart} className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
+                <ShoppingCartIcon /> ADD TO CART
+              </Button>
+              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
+                <BoltIcon /> BUY NOW
+              </Button>
             </div>
           </div>
 
@@ -160,14 +160,14 @@ const ProductDetails: React.FC = () => {
             <div className="mb-6">
               <h3 className="text-base font-medium text-foreground mb-3">Available offers</h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
-                                <li className="flex items-start gap-2">
-                                    <TagIcon className="text-purple-500 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2">
+                  <TagIcon className="text-purple-500 mt-0.5 flex-shrink-0" />
                   <span>
                     <span className="font-bold">Bank Offer:</span> 5% Cashback on Flipkart Axis Bank Card <span className="text-blue-600 font-medium cursor-pointer">T&C</span>
                   </span>
                 </li>
-                                <li className="flex items-start gap-2">
-                                    <TagIcon className="text-purple-500 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2">
+                  <TagIcon className="text-purple-500 mt-0.5 flex-shrink-0" />
                   <span>
                     <span className="font-bold">Special Price:</span> Get extra 10% off (price inclusive of cashback/coupon) <span className="text-blue-600 font-medium cursor-pointer">T&C</span>
                   </span>

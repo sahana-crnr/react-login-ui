@@ -12,6 +12,7 @@ import ProductCard from "../components/ProductCard";
 import useSearchStore from "../utils/useSearchStore";
 import { Product } from "../types/shop";
 import { toIconComponent } from "../utils/icons";
+import { Preloader } from "../components/ui/preloader";
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -415,16 +416,8 @@ const Home = () => {
           </div>
         </div>
 
-        {isInitialLoading ? (
-          showInitialLoader ? (
-            <Preloader
-              title="Loading products"
-              description="Building your collection view."
-              className="mx-auto"
-            />
-          ) : (
-            <div className="min-h-[22rem]" />
-          )
+        {isInitialLoading && showInitialLoadingText ? (
+          <Preloader />
         ) : displayProducts.length === 0 ? (
           <div className="text-center text-muted-foreground text-lg py-20 bg-card rounded-2xl shadow-sm border border-border">
             No products found matching your criteria.
@@ -438,9 +431,7 @@ const Home = () => {
             </div>
             <div ref={ref} />
             {isFetchingNextPage && (
-              <div className="py-8">
-                <Preloader compact title="Loading more" className="mx-auto" />
-              </div>
+              <Preloader compact title="Loading more..." />
             )}
           </>
         )}

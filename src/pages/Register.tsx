@@ -34,7 +34,13 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type RegisterFormValues = {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+};
 
 const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,23 +59,22 @@ const Register: React.FC = () => {
     trigger,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(registerSchema) as any,
+    // @ts-ignore - Bypass deep type instantiation TS error
+    mode: "onTouched",
   });
-
-  const validateField = async (field: keyof RegisterFormValues) => {
-    await trigger(field);
-  };
 
   const nameField = register("name");
   const emailField = register("email");
   const phoneField = register("phone");
   const passwordField = register("password");
   const confirmPasswordField = register("confirmPassword");
-
   const onSubmit = async (data: RegisterFormValues) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const result = registerUser(data.email, data.password, data.phone, data.name);
+
 
     if (!result.success) {
       toast.error(result.message);
@@ -94,27 +99,23 @@ const Register: React.FC = () => {
               id="name"
               type="text"
               {...nameField}
-              autoComplete="name"
-              onBlur={(event) => {
-                nameField.onBlur(event);
-                void validateField("name");
-              }}
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                errors.name ? "border-red-500 focus-visible:ring-red-500" : ""
-              }`}
+          
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.name != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
               placeholder="Enter your full name"
             />
-            {errors.name && (
+            {errors.name != null && (
               <p className="text-red-500 text-xs mt-1 font-medium">{errors.name.message}</p>
             )}
           </div>
-
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
               {...emailField}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.email != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
               autoComplete="email"
               onBlur={(event) => {
                 emailField.onBlur(event);
@@ -125,7 +126,7 @@ const Register: React.FC = () => {
               }`}
               placeholder="Enter your email"
             />
-            {errors.email && (
+            {errors.email != null && (
               <p className="text-red-500 text-xs mt-1 font-medium">{errors.email.message}</p>
             )}
           </div>
@@ -136,19 +137,13 @@ const Register: React.FC = () => {
               id="phone"
               type="tel"
               {...phoneField}
-              autoComplete="tel"
               inputMode="numeric"
               maxLength={10}
-              onBlur={(event) => {
-                phoneField.onBlur(event);
-                void validateField("phone");
-              }}
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                errors.phone ? "border-red-500 focus-visible:ring-red-500" : ""
-              }`}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.phone != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
               placeholder="Enter your phone number"
             />
-            {errors.phone && (
+            {errors.phone != null && (
               <p className="text-red-500 text-xs mt-1 font-medium">{errors.phone.message}</p>
             )}
           </div>
@@ -160,14 +155,8 @@ const Register: React.FC = () => {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 {...passwordField}
-                autoComplete="new-password"
-                onBlur={(event) => {
-                  passwordField.onBlur(event);
-                  void validateField("password");
-                }}
-                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                  errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
+                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.password != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                  }`}
                 placeholder="Enter your password"
               />
               <button
@@ -178,7 +167,7 @@ const Register: React.FC = () => {
                 {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
               </button>
             </div>
-            {errors.password && (
+            {errors.password != null && (
               <p className="text-red-500 text-xs mt-1 font-medium">{errors.password.message}</p>
             )}
           </div>
@@ -189,17 +178,11 @@ const Register: React.FC = () => {
               id="confirmPassword"
               type="password"
               {...confirmPasswordField}
-              autoComplete="new-password"
-              onBlur={(event) => {
-                confirmPasswordField.onBlur(event);
-                void validateField("confirmPassword");
-              }}
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""
-              }`}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.confirmPassword != null ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
               placeholder="Confirm your password"
             />
-            {errors.confirmPassword && (
+            {errors.confirmPassword != null && (
               <p className="text-red-500 text-xs mt-1 font-medium">{errors.confirmPassword.message}</p>
             )}
           </div>

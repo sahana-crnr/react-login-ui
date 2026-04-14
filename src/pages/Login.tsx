@@ -21,7 +21,10 @@ const loginSchema = z.object({
   password: z.string().min(1, { message: "Password is required" }).min(6, { message: "Password must be at least 6 characters long" }),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,16 +41,15 @@ const Login: React.FC = () => {
     trigger,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(loginSchema) as any,
+    // @ts-ignore - Bypass deep type instantiation TS error
+    mode: "onTouched",
   });
 
-  const validateField = async (field: keyof LoginFormValues) => {
-    await trigger(field);
-  };
 
   const emailField = register("email");
   const passwordField = register("password");
-
   const onSubmit = async (data: LoginFormValues) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -90,14 +92,8 @@ const Login: React.FC = () => {
               id="email"
               type="email"
               {...emailField}
-              autoComplete="email"
-              onBlur={(event) => {
-                emailField.onBlur(event);
-                void validateField("email");
-              }}
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
-              }`}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
+                }`}
               placeholder="Enter your email"
             />
             {errors.email && (
@@ -112,14 +108,8 @@ const Login: React.FC = () => {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 {...passwordField}
-                autoComplete="current-password"
-                onBlur={(event) => {
-                  passwordField.onBlur(event);
-                  void validateField("password");
-                }}
-                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 ${
-                  errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
+                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
+                  }`}
                 placeholder="Enter your password"
               />
               <button
