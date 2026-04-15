@@ -10,7 +10,10 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 
 const forgotPasswordSchema = z.object({
-  email: z.string().min(1, { message: "Email is required" }).email({ message: "Invalid email address" }),
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Invalid email address" }),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -39,7 +42,9 @@ const ForgotPassword: React.FC = () => {
       return;
     }
 
-    toast.success("Password reset link sent to your email!", { duration: 5000 });
+    toast.success("Password reset link sent to your email!", {
+      duration: 5000,
+    });
     console.log("Password reset requested for:", data.email);
 
     navigate("/");
@@ -48,7 +53,9 @@ const ForgotPassword: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
       <div className="bg-card p-8 rounded-2xl shadow-lg w-full max-w-md border border-border relative">
-        <h2 className="text-3xl font-extrabold text-center text-purple-700 mb-4">Reset Password</h2>
+        <h2 className="text-3xl font-extrabold text-center text-purple-700 mb-4">
+          Reset Password
+        </h2>
         <p className="text-muted-foreground text-sm text-center mb-6">
           Enter your registered email to receive a password reset link.
         </p>
@@ -65,15 +72,27 @@ const ForgotPassword: React.FC = () => {
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1 font-medium">{errors.email.message}</p>
+              <p className="text-red-500 text-xs mt-1 font-medium">
+                {errors.email.message}
+              </p>
             )}
           </div>
-          <Button type="submit" disabled={isSubmitting} className="w-full mt-6 bg-purple-600 hover:bg-purple-700">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full mt-6 bg-purple-600 hover:bg-purple-700"
+          >
             {isSubmitting ? "Sending..." : "Send Reset Link"}
           </Button>
         </form>
         <p className="text-center text-muted-foreground text-sm mt-6">
-          Remember your password? <Link to="/" className="text-purple-600 font-bold hover:text-purple-800 transition">Login</Link>
+          Remember your password?{" "}
+          <Link
+            to="/"
+            className="text-purple-600 font-bold hover:text-purple-800 transition"
+          >
+            Login
+          </Link>
         </p>
       </div>
     </div>

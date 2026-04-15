@@ -62,7 +62,9 @@ const Sidebar = () => {
       </SheetTrigger>
       <SheetContent side="left" className="w-full max-w-xs p-0">
         <SheetHeader className="p-6 pb-4">
-          <SheetTitle className="text-2xl font-bold text-purple-700">Menu</SheetTitle>
+          <SheetTitle className="text-2xl font-bold text-purple-700">
+            Menu
+          </SheetTitle>
         </SheetHeader>
         <div className="flex flex-col h-full">
           <div className="flex-1 px-4 py-2 space-y-1">
@@ -86,11 +88,21 @@ const Sidebar = () => {
               }`}
             >
               <ul className="py-2 space-y-2 text-muted-foreground">
-                <li className="hover:text-purple-600 cursor-pointer">Electronics</li>
-                <li className="hover:text-purple-600 cursor-pointer">Fashion & Apparel</li>
-                <li className="hover:text-purple-600 cursor-pointer">Home & Furniture</li>
-                <li className="hover:text-purple-600 cursor-pointer">Books & Media</li>
-                <li className="hover:text-purple-600 cursor-pointer">Sports & Outdoors</li>
+                <li className="hover:text-purple-600 cursor-pointer">
+                  Electronics
+                </li>
+                <li className="hover:text-purple-600 cursor-pointer">
+                  Fashion & Apparel
+                </li>
+                <li className="hover:text-purple-600 cursor-pointer">
+                  Home & Furniture
+                </li>
+                <li className="hover:text-purple-600 cursor-pointer">
+                  Books & Media
+                </li>
+                <li className="hover:text-purple-600 cursor-pointer">
+                  Sports & Outdoors
+                </li>
               </ul>
             </div>
 

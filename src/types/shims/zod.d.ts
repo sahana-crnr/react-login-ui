@@ -17,9 +17,13 @@ declare module "zod" {
       : never;
   };
 
-  export interface ZodObject<TShape extends ZodRawShape>
-    extends ZodType<OutputFromShape<TShape>> {
-    refine(check: (data: OutputFromShape<TShape>) => boolean, options?: unknown): this;
+  export interface ZodObject<TShape extends ZodRawShape> extends ZodType<
+    OutputFromShape<TShape>
+  > {
+    refine(
+      check: (data: OutputFromShape<TShape>) => boolean,
+      options?: unknown,
+    ): this;
   }
 
   export function string(): ZodString;

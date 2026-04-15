@@ -12,4 +12,3 @@ test("renders the login page on the default route", () => {
 
   expect(screen.getByRole("heading", { name: /login/i })).toBeTruthy();
 });
-

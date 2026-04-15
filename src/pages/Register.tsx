@@ -18,16 +18,23 @@ const EyeSlashIcon = toIconComponent(FaEyeSlash);
 const registerSchema = z
   .object({
     name: z.string().min(1, { message: "Name is required" }),
-    email: z.string().min(1, { message: "Email is required" }).email({ message: "Invalid email address" }),
+    email: z
+      .string()
+      .min(1, { message: "Email is required" })
+      .email({ message: "Invalid email address" }),
     phone: z
       .string()
       .min(1, { message: "Phone number is required" })
-      .refine((value) => /^\d{10}$/.test(value), { message: "Phone number must be 10 digits" }),
+      .refine((value) => /^\d{10}$/.test(value), {
+        message: "Phone number must be 10 digits",
+      }),
     password: z
       .string()
       .min(1, { message: "Password is required" })
       .min(6, { message: "Password must be at least 6 characters long" }),
-    confirmPassword: z.string().min(1, { message: "Please confirm your password" }),
+    confirmPassword: z
+      .string()
+      .min(1, { message: "Please confirm your password" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -70,8 +77,12 @@ const Register: React.FC = () => {
   const onSubmit = async (data: RegisterFormValues) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const result = registerUser(data.email, data.password, data.phone, data.name);
-
+    const result = registerUser(
+      data.email,
+      data.password,
+      data.phone,
+      data.name,
+    );
 
     if (!result.success) {
       toast.error(result.message);
@@ -87,7 +98,9 @@ const Register: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
       <div className="bg-card p-8 rounded-2xl shadow-lg w-full max-w-md border border-border relative">
-        <h2 className="text-3xl font-bold text-center text-purple-700 mb-3">Account Setup</h2>
+        <h2 className="text-3xl font-bold text-center text-purple-700 mb-3">
+          Account Setup
+        </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
@@ -96,13 +109,17 @@ const Register: React.FC = () => {
               id="name"
               type="text"
               {...nameField}
-          
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.name != null ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${
+                errors.name != null
+                  ? "border-red-500 focus-visible:ring-red-500"
+                  : ""
+              }`}
               placeholder="Enter your full name"
             />
             {errors.name != null && (
-              <p className="text-red-500 text-xs mt-1 font-medium">{errors.name.message}</p>
+              <p className="text-red-500 text-xs mt-1 font-medium">
+                {errors.name.message}
+              </p>
             )}
           </div>
           <div>
@@ -117,7 +134,9 @@ const Register: React.FC = () => {
               placeholder="Enter your email"
             />
             {errors.email != null && (
-              <p className="text-red-500 text-xs mt-1 font-medium">{errors.email.message}</p>
+              <p className="text-red-500 text-xs mt-1 font-medium">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
@@ -129,12 +148,17 @@ const Register: React.FC = () => {
               {...phoneField}
               inputMode="numeric"
               maxLength={10}
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.phone != null ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${
+                errors.phone != null
+                  ? "border-red-500 focus-visible:ring-red-500"
+                  : ""
+              }`}
               placeholder="Enter your phone number"
             />
             {errors.phone != null && (
-              <p className="text-red-500 text-xs mt-1 font-medium">{errors.phone.message}</p>
+              <p className="text-red-500 text-xs mt-1 font-medium">
+                {errors.phone.message}
+              </p>
             )}
           </div>
 
@@ -145,8 +169,11 @@ const Register: React.FC = () => {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 {...passwordField}
-                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.password != null ? "border-red-500 focus-visible:ring-red-500" : ""
-                  }`}
+                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${
+                  errors.password != null
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
                 placeholder="Enter your password"
               />
               <button
@@ -158,7 +185,9 @@ const Register: React.FC = () => {
               </button>
             </div>
             {errors.password != null && (
-              <p className="text-red-500 text-xs mt-1 font-medium">{errors.password.message}</p>
+              <p className="text-red-500 text-xs mt-1 font-medium">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -168,23 +197,35 @@ const Register: React.FC = () => {
               id="confirmPassword"
               type="password"
               {...confirmPasswordField}
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.confirmPassword != null ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${
+                errors.confirmPassword != null
+                  ? "border-red-500 focus-visible:ring-red-500"
+                  : ""
+              }`}
               placeholder="Confirm your password"
             />
             {errors.confirmPassword != null && (
-              <p className="text-red-500 text-xs mt-1 font-medium">{errors.confirmPassword.message}</p>
+              <p className="text-red-500 text-xs mt-1 font-medium">
+                {errors.confirmPassword.message}
+              </p>
             )}
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full mt-6 bg-purple-600 hover:bg-purple-700">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full mt-6 bg-purple-600 hover:bg-purple-700"
+          >
             {isSubmitting ? "Processing..." : "Submit"}
           </Button>
         </form>
 
         <p className="text-center text-muted-foreground text-sm mt-6">
-          Already have an account?{' '}
-          <Link to="/" className="text-purple-600 font-bold hover:text-purple-800 transition">
+          Already have an account?{" "}
+          <Link
+            to="/"
+            className="text-purple-600 font-bold hover:text-purple-800 transition"
+          >
             Login
           </Link>
         </p>

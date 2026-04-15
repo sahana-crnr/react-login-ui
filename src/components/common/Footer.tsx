@@ -14,30 +14,44 @@ export default function Footer() {
         <div>
           <h2 className="text-xl font-bold text-purple-500 mb-4">ShopZone</h2>
           <p className="text-muted-foreground text-sm">
-            Your one-stop destination for all your shopping needs. Quality products at
-            the best prices.
+            Your one-stop destination for all your shopping needs. Quality
+            products at the best prices.
           </p>
         </div>
         <div>
-          <h3 className="text-xl font-bold text-purple-500 mb-4 ">Quick Links</h3>
+          <h3 className="text-xl font-bold text-purple-500 mb-4 ">
+            Quick Links
+          </h3>
           <ul className="text-muted-foreground text-sm space-y-2">
             <li>
-              <Link to="/home" className="hover:text-purple-500 transition-colors">
+              <Link
+                to="/home"
+                className="hover:text-purple-500 transition-colors"
+              >
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/products" className="hover:text-purple-500 transition-colors">
+              <Link
+                to="/products"
+                className="hover:text-purple-500 transition-colors"
+              >
                 Products
               </Link>
             </li>
             <li>
-              <Link to="/about" className="hover:text-purple-500 transition-colors">
+              <Link
+                to="/about"
+                className="hover:text-purple-500 transition-colors"
+              >
                 About Us
               </Link>
             </li>
             <li>
-              <Link to="/contact" className="hover:text-purple-500 transition-colors">
+              <Link
+                to="/contact"
+                className="hover:text-purple-500 transition-colors"
+              >
                 Contact
               </Link>
             </li>
@@ -45,11 +59,16 @@ export default function Footer() {
         </div>
         <div className="flex flex-col md:items-end">
           <div className="w-full md:w-max">
-            <h3 className="text-xl font-bold text-purple-500 mb-4 ">Newsletter</h3>
+            <h3 className="text-xl font-bold text-purple-500 mb-4 ">
+              Newsletter
+            </h3>
             <p className="text-muted-foreground text-sm mb-4">
               Subscribe to get special offers and updates.
             </p>
-            <form className="flex justify-center md:justify-start" onSubmit={handleSubmit}>
+            <form
+              className="flex justify-center md:justify-start"
+              onSubmit={handleSubmit}
+            >
               <label htmlFor="newsletter-email" className="sr-only">
                 Newsletter Email
               </label>

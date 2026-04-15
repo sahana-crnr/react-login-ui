@@ -80,9 +80,18 @@ export interface ShopStoreState {
 export interface AuthStoreState {
   currentUser: UserProfile | null;
   isLoggedIn: boolean;
-  registerUser: (email: string, password: string, phone: string, name: string) => AuthActionResult;
+  registerUser: (
+    email: string,
+    password: string,
+    phone: string,
+    name: string,
+  ) => AuthActionResult;
   loginUser: (email: string, password: string) => AuthActionResult;
   logoutUser: () => void;
   checkEmailExists: (email: string) => boolean;
-  updateUserData: (email: string, cart: CartItem[], wishlist: Product[]) => void;
+  updateUserData: (
+    email: string,
+    cart: CartItem[],
+    wishlist: Product[],
+  ) => void;
 }

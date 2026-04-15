@@ -1,6 +1,17 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaChevronRight, FaSearch, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import {
+  FaChevronRight,
+  FaSearch,
+  FaSignOutAlt,
+  FaTimes,
+} from "react-icons/fa";
 import { FiMoon, FiShoppingCart, FiSun } from "react-icons/fi";
 import { useDebounce } from "use-debounce";
 import Sidebar from "./Sidebar";
@@ -87,7 +98,9 @@ export default function Header() {
           return { product, score: popularity };
         }
 
-        const matchesAllWords = queryWords.every((word) => haystack.includes(word));
+        const matchesAllWords = queryWords.every((word) =>
+          haystack.includes(word),
+        );
         if (!matchesAllWords) {
           return { product, score: 0 };
         }
@@ -243,7 +256,8 @@ export default function Header() {
                   {searchTerm.trim() ? "Suggestions" : "Popular picks"}
                 </p>
                 <p className="text-sm font-semibold text-foreground">
-                  {suggestions.length} result{suggestions.length === 1 ? "" : "s"}
+                  {suggestions.length} result
+                  {suggestions.length === 1 ? "" : "s"}
                 </p>
               </div>
               <span className="rounded-full border border-border bg-background px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground shadow-sm">
@@ -296,7 +310,9 @@ export default function Header() {
                   >
                     <div
                       className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border transition-all ${
-                        isActive ? "border-white/20 bg-white/10" : "border-border bg-muted/30"
+                        isActive
+                          ? "border-white/20 bg-white/10"
+                          : "border-border bg-muted/30"
                       }`}
                     >
                       <img
@@ -322,10 +338,13 @@ export default function Header() {
                           </p>
                           <p
                             className={`mt-1 truncate text-xs ${
-                              isActive ? "text-white/80" : "text-muted-foreground"
+                              isActive
+                                ? "text-white/80"
+                                : "text-muted-foreground"
                             }`}
                           >
-                            {product.color ?? "Product"} {product.size ? `• ${product.size}` : ""}
+                            {product.color ?? "Product"}{" "}
+                            {product.size ? `• ${product.size}` : ""}
                           </p>
                         </div>
 
@@ -346,10 +365,14 @@ export default function Header() {
                         >
                           {formatPrice(product.price)}
                         </span>
-                        <span className={`${isActive ? "text-white/80" : "text-foreground/80"}`}>
+                        <span
+                          className={`${isActive ? "text-white/80" : "text-foreground/80"}`}
+                        >
                           {product.rating?.toFixed(1) ?? "0.0"} rating
                         </span>
-                        <span className={`${isActive ? "text-white/70" : "text-foreground/70"}`}>
+                        <span
+                          className={`${isActive ? "text-white/70" : "text-foreground/70"}`}
+                        >
                           {product.reviewsCount ?? 0} reviews
                         </span>
                       </div>
@@ -363,10 +386,16 @@ export default function Header() {
 
         <div className="flex items-center justify-between md:justify-end gap-4 md:gap-6 shrink-0 w-full md:w-auto overflow-x-auto">
           <nav className="flex gap-4 md:gap-6 text-muted-foreground font-medium whitespace-nowrap">
-            <Link to="/home" className="hover:text-purple-600 transition-colors">
+            <Link
+              to="/home"
+              className="hover:text-purple-600 transition-colors"
+            >
               Home
             </Link>
-            <Link to="/about" className="hover:text-purple-600 transition-colors">
+            <Link
+              to="/about"
+              className="hover:text-purple-600 transition-colors"
+            >
               About Us
             </Link>
           </nav>
@@ -375,7 +404,9 @@ export default function Header() {
               type="button"
               aria-pressed={isDark}
               onClick={toggleTheme}
-              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={
+                isDark ? "Switch to light mode" : "Switch to dark mode"
+              }
               className="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-all hover:border-purple-600 hover:shadow-[0_12px_28px_rgba(124,58,237,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <span

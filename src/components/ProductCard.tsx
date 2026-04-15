@@ -1,4 +1,4 @@
-import type { CSSProperties, FC, MouseEvent } from "react";
+import type { FC, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
@@ -8,6 +8,7 @@ import { Button, iconActionButtonClass } from "./ui/button";
 import useShopStore from "../store/useShopStore";
 import { Product } from "../types/shop";
 import { toIconComponent } from "../utils/icons";
+import { clampTextStyle } from "../utils/stylesUtils";
 
 type ProductCardProps = {
   product: Product;
@@ -17,17 +18,13 @@ const HeartIcon = toIconComponent(FaHeart);
 const HeartOutlineIcon = toIconComponent(FaRegHeart);
 const ShareIcon = toIconComponent(FiShare2);
 
-const clampTextStyle = (lines: number): CSSProperties => ({
-  display: "-webkit-box",
-  WebkitBoxOrient: "vertical",
-  WebkitLineClamp: lines,
-  overflow: "hidden",
-});
-
 const ProductCard: FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
-  const originalPrice = product.originalPrice || Math.round(product.price * 1.35);
-  const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
+  const originalPrice =
+    product.originalPrice || Math.round(product.price * 1.35);
+  const discount = Math.round(
+    ((originalPrice - product.price) / originalPrice) * 100,
+  );
   const productImageSrc = product.image?.startsWith("/")
     ? process.env.PUBLIC_URL + product.image
     : (product.image ?? "");
@@ -141,9 +138,13 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
             <span className="text-sm text-muted-foreground line-through">
               ₹ {originalPrice}
             </span>
-            <span className="text-md font-bold text-foreground">₹ {product.price}</span>
+            <span className="text-md font-bold text-foreground">
+              ₹ {product.price}
+            </span>
           </div>
-          <span className="text-sm text-green-600 font-bold">{discount}% off</span>
+          <span className="text-sm text-green-600 font-bold">
+            {discount}% off
+          </span>
         </div>
       </div>
     </div>

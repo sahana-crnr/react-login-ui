@@ -10,15 +10,26 @@ import useShopStore from "../store/useShopStore";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { AuthActionResult, CartItem, Product, UserProfile } from "../types/shop";
+import {
+  AuthActionResult,
+  CartItem,
+  Product,
+  UserProfile,
+} from "../types/shop";
 import { toIconComponent } from "../utils/icons";
 
 const EyeIcon = toIconComponent(FaEye);
 const EyeSlashIcon = toIconComponent(FaEyeSlash);
 
 const loginSchema = z.object({
-  email: z.string().min(1, { message: "Email is required" }).email({ message: "Invalid email address" }),
-  password: z.string().min(1, { message: "Password is required" }).min(6, { message: "Password must be at least 6 characters long" }),
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(1, { message: "Password is required" })
+    .min(6, { message: "Password must be at least 6 characters long" }),
 });
 
 type LoginFormValues = {
@@ -44,7 +55,6 @@ const Login: React.FC = () => {
     mode: "onTouched",
   });
 
-
   const emailField = register("email");
   const passwordField = register("password");
   const onSubmit = async (data: LoginFormValues) => {
@@ -59,7 +69,9 @@ const Login: React.FC = () => {
       return;
     }
 
-    const { currentUser } = useAuthStore.getState() as { currentUser: UserProfile | null };
+    const { currentUser } = useAuthStore.getState() as {
+      currentUser: UserProfile | null;
+    };
     const { setCart, setWishlist } = useShopStore.getState() as {
       setCart?: (cart: CartItem[]) => void;
       setWishlist?: (wishlist: Product[]) => void;
@@ -80,7 +92,9 @@ const Login: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
       <div className="bg-card p-8 rounded-2xl shadow-lg w-full max-w-md border border-border relative">
-        <h2 className="text-3xl font-bold text-center text-purple-900 mb-3">Login</h2>
+        <h2 className="text-3xl font-bold text-center text-purple-900 mb-3">
+          Login
+        </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
@@ -89,12 +103,15 @@ const Login: React.FC = () => {
               id="email"
               type="email"
               {...emailField}
-              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
-                }`}
+              className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${
+                errors.email ? "border-red-500 focus-visible:ring-red-500" : ""
+              }`}
               placeholder="Enter your email"
             />
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1 font-medium">{errors.email.message}</p>
+              <p className="text-red-500 text-xs mt-1 font-medium">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
@@ -105,8 +122,11 @@ const Login: React.FC = () => {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 {...passwordField}
-                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${errors.password ? "border-red-500 focus-visible:ring-red-500" : ""
-                  }`}
+                className={`mt-1 placeholder-gray-500 dark:placeholder-gray-400 [&:-webkit-autofill]:[transition:background-color_9999s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:#000] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff] ${
+                  errors.password
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
                 placeholder="Enter your password"
               />
               <button
@@ -118,7 +138,9 @@ const Login: React.FC = () => {
               </button>
             </div>
             {errors.password && (
-              <p className="text-red-500 text-xs mt-1 font-medium">{errors.password.message}</p>
+              <p className="text-red-500 text-xs mt-1 font-medium">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -135,18 +157,31 @@ const Login: React.FC = () => {
               />
               <span>Remember me</span>
             </Label>
-            <Link to="/forgot-password" className="text-purple-600 font-medium hover:text-purple-800 transition">
+            <Link
+              to="/forgot-password"
+              className="text-purple-600 font-medium hover:text-purple-800 transition"
+            >
               Forgot password?
             </Link>
           </div>
 
-          <Button type="submit" disabled={isSubmitting} className="w-full mt-6 bg-purple-600 hover:bg-purple-700">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full mt-6 bg-purple-600 hover:bg-purple-700"
+          >
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </form>
 
         <p className="text-center text-muted-foreground text-sm mt-6">
-          Don't have an account? <Link to="/register" className="text-purple-600 font-bold hover:text-purple-800 transition">Sign up</Link>
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="text-purple-600 font-bold hover:text-purple-800 transition"
+          >
+            Sign up
+          </Link>
         </p>
       </div>
     </div>
