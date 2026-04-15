@@ -12,7 +12,7 @@ import {
   ProductFilters,
   ProductsPage,
   ProductsQueryKey,
-} from "./homeUtils";
+} from "../data/productQueries";
 
 const Home = () => {
   const searchTerm = useSearchStore((state) => state.searchTerm);

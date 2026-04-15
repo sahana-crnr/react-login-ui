@@ -8,8 +8,9 @@ import {
   FaBolt,
   FaHeart,
   FaRegHeart,
+  FaShoppingCart,
 } from "react-icons/fa";
-import { FiShoppingCart, FiShare2 } from "react-icons/fi";
+import { FiShare2 } from "react-icons/fi";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import toast from "react-hot-toast";
@@ -24,7 +25,7 @@ const TagIcon = toIconComponent(FaTag);
 const BoltIcon = toIconComponent(FaBolt);
 const HeartIcon = toIconComponent(FaHeart);
 const HeartOutlineIcon = toIconComponent(FaRegHeart);
-const ShoppingCartIcon = toIconComponent(FiShoppingCart);
+const ShoppingCartIcon = toIconComponent(FaShoppingCart);
 const ShareIcon = toIconComponent(FiShare2);
 
 const ProductDetails: React.FC = () => {
@@ -190,7 +191,7 @@ const ProductDetails: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <span className="text-purple-600 text-sm font-bold">
+              <span className="text-purple-600 text-sm font-bold dark:text-purple-300">
                 Special price
               </span>
               <div className="flex items-baseline gap-3 mt-1">
@@ -216,7 +217,7 @@ const ProductDetails: React.FC = () => {
                   <span>
                     <span className="font-bold">Bank Offer:</span> 5% Cashback
                     on Flipkart Axis Bank Card{" "}
-                    <span className="text-blue-600 font-medium cursor-pointer">
+                    <span className="text-blue-600 font-medium cursor-pointer dark:text-blue-300">
                       T&C
                     </span>
                   </span>
@@ -226,7 +227,7 @@ const ProductDetails: React.FC = () => {
                   <span>
                     <span className="font-bold">Special Price:</span> Get extra
                     10% off (price inclusive of cashback/coupon){" "}
-                    <span className="text-blue-600 font-medium cursor-pointer">
+                    <span className="text-blue-600 font-medium cursor-pointer dark:text-blue-300">
                       T&C
                     </span>
                   </span>
@@ -248,15 +249,15 @@ const ProductDetails: React.FC = () => {
                   More about that product
                 </h3>
                 <div className="flex flex-wrap gap-3 text-sm font-medium text-muted-foreground">
-                  <span className="bg-white px-4 py-2 rounded-2xl border border-border shadow-sm">
+                  <span className="bg-background px-4 py-2 rounded-2xl border border-border shadow-sm text-foreground dark:bg-card">
                     Color:{" "}
-                    <span className="text-purple-700 font-bold">
+                    <span className="font-bold text-purple-700 dark:text-purple-300">
                       {product.color}
                     </span>
                   </span>
-                  <span className="bg-white px-4 py-2 rounded-2xl border border-border shadow-sm">
+                  <span className="bg-background px-4 py-2 rounded-2xl border border-border shadow-sm text-foreground dark:bg-card">
                     Size:{" "}
-                    <span className="text-purple-700 font-bold">
+                    <span className="font-bold text-purple-700 dark:text-purple-300">
                       {product.size}
                     </span>
                   </span>

@@ -1,8 +1,9 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import products from "../data/products.json";
+import products from "./products.json";
 import { Product } from "../types/shop";
 
 export const PRODUCTS_PER_PAGE = 8;
+
 export const productCatalog = (
   Array.isArray(products) ? products : []
 ) as Product[];

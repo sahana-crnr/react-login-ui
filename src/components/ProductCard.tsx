@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import toast from "react-hot-toast";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Button, iconActionButtonClass } from "./ui/button";
 import useShopStore from "../store/useShopStore";
 import { Product } from "../types/shop";
@@ -101,10 +100,11 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
           backgroundBlendMode: "overlay",
         }}
       >
-        <LazyLoadImage
+        <img
           src={productImageSrc}
           alt={product.name}
-          threshold={300}
+          loading="eager"
+          decoding="async"
           className="h-full w-full object-contain"
         />
       </div>
