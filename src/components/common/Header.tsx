@@ -58,7 +58,9 @@ const highlightText = (text: string, query: string) => {
   return (
     <>
       {before}
-      <span className="text-foreground font-semibold">{match}</span>
+      <span className="rounded px-1 font-semibold text-yellow-600 bg-yellow-100 dark:bg-yellow-500/15 dark:text-yellow-300">
+        {match}
+      </span>
       {after}
     </>
   );
