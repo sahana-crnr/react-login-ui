@@ -1,93 +1,39 @@
 
-# React Login Form UI
+# Next.js Starter
 
-A simple and responsive **Login Form UI built with React.js** using reusable components and styled with **Tailwind CSS**.
+This repo has been converted into a starter project for **Next.js** with:
 
-This project demonstrates component-based UI development in React and includes a password visibility toggle using an eye icon.
+- App Router
+- TypeScript
+- Tailwind CSS
+- a clean landing page scaffold
 
----
+## Run it
 
-# Features
-
-* Built using **React.js**
-* Reusable components (**Button, Input, Card**)
-* **Password show/hide toggle** using eye icon
-* Styled using **Tailwind CSS**
-* Responsive layout for **laptop and desktop**
-* Clean component structure
-
----
-
-# Project Preview
-
-Login form contains:
-
-* Email input field
-* Password input field with **show/hide icon**
-* Sign in button
-* Responsive card layout
-
----
-
-# Project Structure
-
-```
-src
- ├── components
- │   ├── Button.jsx
- │   ├── Input.jsx
- │   └── Card.jsx
- │
- ├── LoginForm.jsx
- ├── App.js
- └── index.js
-```
-
----
-
-# Getting Started
-
-This project was created using **Create React App**.
-
-## Install Dependencies
-
-```
+```bash
 npm install
+npm run dev
 ```
 
-## Run the Application
+Then open:
 
-```
-npm start
-```
-
-Open the browser and go to:
-
-```
+```bash
 http://localhost:3000
 ```
 
-The application will reload automatically when you make changes.
+## Build
 
----
-
-# Build for Production
-
-To create a production build:
-
-```
+```bash
 npm run build
+npm start
 ```
 
-The optimized build will be generated in the **build** folder.
+## What to edit first
 
----
-
-# Technologies Used
-
-* React.js
-* Tailwind CSS
-* React Icons
+- `app/page.tsx` for the home page
+- `app/layout.tsx` for shared metadata and shell
+- `app/globals.css` for base styling
+- `app/` route folders for new pages
 
 ---
 

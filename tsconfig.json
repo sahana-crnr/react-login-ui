@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
+        "./*",
+        "./src/*"
       ],
       "react-hook-form": [
         "src/types/shims/react-hook-form"
@@ -16,7 +17,7 @@
         "src/types/shims/zod"
       ]
     },
-    "target": "es5",
+    "target": "es2017",
     "lib": [
       "dom",
       "dom.iterable",
@@ -29,13 +30,21 @@
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
-    "src"
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ]
 }
