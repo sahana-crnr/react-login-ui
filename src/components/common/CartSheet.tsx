@@ -57,14 +57,22 @@ export default function CartSheet() {
             {cart.map((item) => (
               <div key={item.id} className="flex items-center gap-4 py-4">
                 <img
-                  src={item.image?.startsWith("/") ? process.env.PUBLIC_URL + item.image : item.image}
+                  src={
+                    item.image?.startsWith("/")
+                      ? process.env.PUBLIC_URL + item.image
+                      : item.image
+                  }
                   alt={item.name}
                   className="w-16 h-16 object-contain rounded-md border p-1"
                 />
                 <div className="flex-1">
                   <p className="font-semibold line-clamp-1">{item.name}</p>
-                  <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
-                  <p className="font-bold text-sm mt-1">₹{item.price * item.quantity}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Qty: {item.quantity}
+                  </p>
+                  <p className="font-bold text-sm mt-1">
+                    ₹{item.price * item.quantity}
+                  </p>
                 </div>
                 <Button
                   variant="ghost"

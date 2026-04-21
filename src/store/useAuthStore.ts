@@ -10,7 +10,7 @@ const useAuthStore = create<AuthStoreState>()(
       currentUser: null,
       isLoggedIn: false,
 
-       registerUser: (email, password, phone, name): AuthActionResult => {
+      registerUser: (email, password, phone, name): AuthActionResult => {
         const users = useUsersStore.getState().users;
         if (users.some((user) => user.email === email)) {
           return { success: false, message: "Email is already registered." };
@@ -63,7 +63,9 @@ const useAuthStore = create<AuthStoreState>()(
         const { currentUser } = get();
         if (currentUser) {
           const { cart, wishlist } = useShopStore.getState();
-          useUsersStore.getState().updateUser(currentUser.email, { cart, wishlist });
+          useUsersStore
+            .getState()
+            .updateUser(currentUser.email, { cart, wishlist });
         }
 
         set({ currentUser: null, isLoggedIn: false });

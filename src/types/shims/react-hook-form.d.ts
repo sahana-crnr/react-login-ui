@@ -1,5 +1,6 @@
 declare module "react-hook-form" {
   export type FieldValues = Record<string, unknown>;
+  export type Mode = "onSubmit" | "onBlur" | "onChange" | "onTouched" | "all";
 
   export type FieldPath<TFieldValues extends FieldValues> = Extract<
     keyof TFieldValues,

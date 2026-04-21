@@ -1,10 +1,10 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import useAuthStore from '../store/useAuthStore';
-import { Button } from '../components/ui/button';
-import { FaUserCircle } from 'react-icons/fa';
-import useShopStore from '../store/useShopStore';
-import { toIconComponent } from '../utils/icons';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from "../store/useAuthStore";
+import { Button } from "../components/ui/button";
+import { FaUserCircle } from "react-icons/fa";
+import useShopStore from "../store/useShopStore";
+import { toIconComponent } from "../utils/icons";
 
 const UserCircleIcon = toIconComponent(FaUserCircle);
 
@@ -22,7 +22,7 @@ const Account: React.FC = () => {
     }
 
     logoutUser();
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (
@@ -37,7 +37,9 @@ const Account: React.FC = () => {
           <div className="bg-card p-6 rounded-lg shadow-sm border border-border">
             <div className="space-y-4 mb-6">
               <div>
-                <label className="text-sm text-muted-foreground">Email Address</label>
+                <label className="text-sm text-muted-foreground">
+                  Email Address
+                </label>
                 <p className="text-lg font-medium">{currentUser.email}</p>
               </div>
             </div>
@@ -48,8 +50,13 @@ const Account: React.FC = () => {
           </div>
         ) : (
           <div className="text-center p-10 bg-card rounded-lg shadow-sm border border-border">
-            <p className="text-lg text-muted-foreground mb-4">You are not logged in.</p>
-            <Button onClick={() => navigate('/login')} className="bg-purple-600 hover:bg-purple-700 text-white">
+            <p className="text-lg text-muted-foreground mb-4">
+              You are not logged in.
+            </p>
+            <Button
+              onClick={() => navigate("/login")}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
               Go to Login
             </Button>
           </div>
