@@ -169,11 +169,11 @@ const ProductDetails: React.FC = () => {
             <div className="flex w-full gap-2 mt-auto">
               <Button
                 onClick={handleAddToCart}
-                className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2"
+                className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center justify-center gap-2 whitespace-nowrap text-center leading-none"
               >
                 <ShoppingCartIcon /> ADD TO CART
               </Button>
-              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center gap-2">
+              <Button className="flex-1 bg-purple-600 hover:bg-purple-700 flex items-center justify-center gap-2 whitespace-nowrap text-center leading-none">
                 <BoltIcon /> BUY NOW
               </Button>
             </div>
