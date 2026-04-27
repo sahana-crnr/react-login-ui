@@ -54,7 +54,7 @@ const Account: React.FC = () => {
               You are not logged in.
             </p>
             <Button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/")}
               className="bg-purple-600 hover:bg-purple-700 text-white"
             >
               Go to Login

@@ -1,12 +1,8 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import products from "./products.json";
+import { fetchProducts } from "../api/products";
 import { Product } from "../types/shop";
 
 export const PRODUCTS_PER_PAGE = 8;
-
-export const productCatalog = (
-  Array.isArray(products) ? products : []
-) as Product[];
 
 export type ProductFilters = {
   searchTerm: string;
@@ -30,7 +26,7 @@ export const fetchProductsPage = async ({
   pageParam = 1,
   queryKey,
 }: QueryFunctionContext<ProductsQueryKey>): Promise<ProductsPage> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const allProducts = await fetchProducts();
 
   const [, filters] = queryKey;
   const searchWords = (filters.searchTerm || "")
@@ -52,7 +48,7 @@ export const fetchProductsPage = async ({
       : Number(filters.minReviews);
   const sortBy = filters.sortBy || "default";
 
-  const filtered = productCatalog.filter((product) => {
+  const filtered = allProducts.filter((product) => {
     const productNameLower = product.name.toLowerCase();
     const matchesSearch = searchWords.every((word) =>
       productNameLower.includes(word),
