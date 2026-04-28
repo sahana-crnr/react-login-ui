@@ -1,60 +1,93 @@
-export const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8000";
+const trimTrailingSlash = (value: string) => value.replace(/\/+$/, "");
 
-export async function readJsonError(response: Response): Promise<string> {
-  const payload = (await response.json().catch(() => null)) as
-    | Record<string, unknown>
-    | null;
+const API_BASE_URL = trimTrailingSlash(
+  process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8000",
+);
 
-  if (!payload) {
-    return `Request failed with status ${response.status}`;
+export class ApiError extends Error {
+  status: number;
+  payload: unknown;
+
+  constructor(message: string, status: number, payload: unknown) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.payload = payload;
   }
-
-  const detail = payload.detail;
-  if (typeof detail === "string") {
-    return detail;
-  }
-
-  const message = payload.message;
-  if (typeof message === "string") {
-    return message;
-  }
-
-  const nonFieldErrors = payload.non_field_errors;
-  if (Array.isArray(nonFieldErrors) && typeof nonFieldErrors[0] === "string") {
-    return nonFieldErrors[0];
-  }
-
-  for (const value of Object.values(payload)) {
-    if (Array.isArray(value) && typeof value[0] === "string") {
-      return value[0];
-    }
-
-    if (typeof value === "string") {
-      return value;
-    }
-  }
-
-  return `Request failed with status ${response.status}`;
 }
 
-export async function requestJson<T>(
+function extractErrorMessage(payload: unknown, fallback: string) {
+  if (typeof payload === "string" && payload.trim()) {
+    return payload;
+  }
+
+  if (payload && typeof payload === "object") {
+    const data = payload as Record<string, unknown>;
+
+    if (typeof data.detail === "string" && data.detail.trim()) {
+      return data.detail;
+    }
+
+    const keys = [
+      "email",
+      "password",
+      "name",
+      "phone",
+      "non_field_errors",
+      "nonFieldErrors",
+    ];
+
+    for (const key of keys) {
+      const value = data[key];
+      if (typeof value === "string" && value.trim()) {
+        return value;
+      }
+      if (Array.isArray(value) && value.length > 0) {
+        const first = value[0];
+        if (typeof first === "string" && first.trim()) {
+          return first;
+        }
+      }
+    }
+  }
+
+  return fallback;
+}
+
+export async function apiRequest<T>(
   path: string,
-  init?: RequestInit,
+  options: RequestInit = {},
 ): Promise<T> {
-  const headers = new Headers(init?.headers);
-  if (init?.body != null) {
+  const headers = new Headers(options.headers ?? {});
+
+  if (options.body && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
+    ...options,
     headers,
   });
 
-  if (!response.ok) {
-    throw new Error(await readJsonError(response));
+  const rawText = await response.text();
+  let payload: unknown = null;
+
+  if (rawText) {
+    try {
+      payload = JSON.parse(rawText);
+    } catch {
+      payload = rawText;
+    }
   }
 
-  return (await response.json()) as T;
+  if (!response.ok) {
+    throw new ApiError(
+      extractErrorMessage(payload, `Request failed with status ${response.status}`),
+      response.status,
+      payload,
+    );
+  }
+
+  return payload as T;
 }
+
