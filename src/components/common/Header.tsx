@@ -6,6 +6,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   FaChevronRight,
   FaSearch,
@@ -22,11 +23,9 @@ import { Input } from "../ui/input";
 import CartSheet from "./CartSheet";
 import useThemeStore from "../../store/useThemeStore";
 import useSearchStore from "../../store/useSearchStore";
-import products from "../../data/products.json";
 import { Product } from "../../types/shop";
 import { toIconComponent } from "../../utils/icons";
-
-const productList = (Array.isArray(products) ? products : []) as Product[];
+import { fetchProducts } from "../../api/products";
 const quickSearchTerms = ["Sneakers", "Headphones", "Watches", "Bags"];
 const SearchIcon = toIconComponent(FaSearch);
 const ChevronRightIcon = toIconComponent(FaChevronRight);
@@ -78,12 +77,17 @@ export default function Header() {
   const openCart = useShopStore((state) => state.openCart);
   const isDark = useThemeStore((state) => state.isDark);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["products", "header-suggestions"],
+    queryFn: fetchProducts,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const suggestions = useMemo(() => {
     const query = debouncedSearchTerm.trim().toLowerCase();
     const queryWords = query.split(/\s+/).filter(Boolean);
 
-    return productList
+    return products
       .map((product) => {
         const name = product.name.toLowerCase();
         const description = (product.description ?? "").toLowerCase();
@@ -128,7 +132,7 @@ export default function Header() {
       .sort((a, b) => b.score - a.score)
       .slice(0, 6)
       .map(({ product }) => product);
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, products]);
 
   const shouldShowSuggestions = isSearchFocused && suggestions.length > 0;
 

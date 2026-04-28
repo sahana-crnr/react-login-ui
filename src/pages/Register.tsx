@@ -57,7 +57,8 @@ const Register: React.FC = () => {
     password: string,
     phone: string,
     name: string,
-  ) => AuthActionResult;
+    confirmPassword: string,
+  ) => Promise<AuthActionResult>;
 
   const {
     register,
@@ -75,24 +76,29 @@ const Register: React.FC = () => {
   const passwordField = register("password");
   const confirmPasswordField = register("confirmPassword");
   const onSubmit = async (data: RegisterFormValues) => {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    const result = registerUser(
+    const result = await registerUser(
       data.email,
       data.password,
       data.phone,
       data.name,
+      data.confirmPassword,
     );
 
     if (!result.success) {
       toast.error(result.message);
-      setError("email", { type: "manual", message: result.message });
+      const fieldName =
+        result.field === "phone"
+          ? "phone"
+          : result.field === "confirmPassword"
+            ? "confirmPassword"
+            : "email";
+      setError(fieldName, { type: "manual", message: result.message });
       return;
     }
 
     toast.success(result.message, { duration: 5000 });
     console.log("Account created successfully:", data);
-    navigate("/", { replace: true });
+    navigate("/home", { replace: true });
   };
 
   return (

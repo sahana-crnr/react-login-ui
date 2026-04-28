@@ -1,74 +1,148 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import useUsersStore from "./useUsersStore";
 import useShopStore from "./useShopStore";
-import { AuthActionResult, AuthStoreState, UserProfile } from "../types/shop";
+import useUsersStore from "./useUsersStore";
+import {
+  clearAuthTokens,
+  loginUserApi,
+  registerUserApi,
+  setAuthTokens,
+} from "../api/auth";
+import {
+  AuthActionResult,
+  AuthStoreState,
+  UserProfile,
+} from "../types/shop";
 
 const useAuthStore = create<AuthStoreState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       currentUser: null,
       isLoggedIn: false,
+      accessToken: null,
+      refreshToken: null,
 
-      registerUser: (email, password, phone, name): AuthActionResult => {
-        const users = useUsersStore.getState().users;
-        if (users.some((user) => user.email === email)) {
-          return { success: false, message: "Email is already registered." };
+      registerUser: async (
+        email,
+        password,
+        phone,
+        name,
+        confirmPassword,
+      ): Promise<AuthActionResult> => {
+        try {
+          const response = await registerUserApi({
+            name,
+            email,
+            phone,
+            password,
+            confirmPassword,
+          });
+
+          setAuthTokens(response.access, response.refresh);
+          set({
+            currentUser: {
+              id: response.user.id,
+              name: response.user.name,
+              email: response.user.email,
+              phone: response.user.phone ?? phone,
+              password: "",
+              cart: [],
+              wishlist: [],
+            } as UserProfile,
+            isLoggedIn: true,
+            accessToken: response.access,
+            refreshToken: response.refresh,
+          });
+
+          useUsersStore.getState().addUser({
+            name,
+            email,
+            phone,
+            password,
+            cart: [],
+            wishlist: [],
+          });
+          useShopStore.getState().setShop([], []);
+
+          return {
+            success: true,
+            message: response.message,
+            user: {
+              name: response.user.name,
+              email: response.user.email,
+              phone: response.user.phone ?? phone,
+              password: "",
+              cart: [],
+              wishlist: [],
+            },
+          };
+        } catch (error) {
+          const message =
+            error instanceof Error ? error.message : "Failed to register.";
+          if (message.toLowerCase().includes("password")) {
+            return { success: false, message, field: "confirmPassword" };
+          }
+
+          if (message.toLowerCase().includes("phone")) {
+            return { success: false, message, field: "phone" };
+          }
+
+          return { success: false, message, field: "email" };
         }
-
-        const newUser: UserProfile = {
-          name,
-          email,
-          phone,
-          password,
-          cart: [],
-          wishlist: [],
-        };
-        useUsersStore.getState().addUser(newUser);
-
-        return { success: true, message: "Account created successfully!" };
       },
 
-      loginUser: (email, password): AuthActionResult => {
-        const users = useUsersStore.getState().users;
-        const user = users.find((entry) => entry.email === email);
+      loginUser: async (email, password): Promise<AuthActionResult> => {
+        try {
+          const response = await loginUserApi({ email, password });
+          const localUser = useUsersStore
+            .getState()
+            .users.find((entry) => entry.email === email);
+          const cart = localUser?.cart || [];
+          const wishlist = localUser?.wishlist || [];
 
-        if (!user) {
-          return {
-            success: false,
-            message: "Email not registered. Please sign up.",
-            field: "email",
+          setAuthTokens(response.access, response.refresh);
+          const loggedInUser: UserProfile = {
+            name: response.user.name,
+            email: response.user.email,
+            phone: response.user.phone ?? "",
+            password: "",
+            cart,
+            wishlist,
           };
-        }
 
-        if (user.password !== password) {
+          set({
+            currentUser: loggedInUser,
+            isLoggedIn: true,
+            accessToken: response.access,
+            refreshToken: response.refresh,
+          });
+          useShopStore.getState().setShop(cart, wishlist);
+
           return {
-            success: false,
-            message: "Incorrect password.",
-            field: "password",
+            success: true,
+            message: response.message,
+            user: loggedInUser,
           };
+        } catch (error) {
+          const message =
+            error instanceof Error ? error.message : "Failed to login.";
+
+          if (message.toLowerCase().includes("password")) {
+            return { success: false, message, field: "password" };
+          }
+
+          return { success: false, message, field: "email" };
         }
-
-        set({ currentUser: user, isLoggedIn: true });
-        useShopStore.getState().setShop(user.cart || [], user.wishlist || []);
-
-        return {
-          success: true,
-          message: "You are logged in successfully!",
-          user,
-        };
       },
 
       logoutUser: () => {
-        const { currentUser } = get();
-        if (currentUser) {
-          const { cart, wishlist } = useShopStore.getState();
-          useUsersStore
-            .getState()
-            .updateUser(currentUser.email, { cart, wishlist });
-        }
-
-        set({ currentUser: null, isLoggedIn: false });
+        clearAuthTokens();
+        set({
+          currentUser: null,
+          isLoggedIn: false,
+          accessToken: null,
+          refreshToken: null,
+        });
         useShopStore.getState().clearShop();
       },
 

@@ -17,6 +17,7 @@ export interface CartItem extends Product {
 }
 
 export interface UserProfile {
+  id?: number;
   name?: string;
   email: string;
   phone?: string;
@@ -80,13 +81,16 @@ export interface ShopStoreState {
 export interface AuthStoreState {
   currentUser: UserProfile | null;
   isLoggedIn: boolean;
+  accessToken: string | null;
+  refreshToken: string | null;
   registerUser: (
     email: string,
     password: string,
     phone: string,
     name: string,
-  ) => AuthActionResult;
-  loginUser: (email: string, password: string) => AuthActionResult;
+    confirmPassword: string,
+  ) => Promise<AuthActionResult>;
+  loginUser: (email: string, password: string) => Promise<AuthActionResult>;
   logoutUser: () => void;
   checkEmailExists: (email: string) => boolean;
   updateUserData: (

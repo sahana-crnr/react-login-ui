@@ -1,23 +1,24 @@
 import React, { useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import productsData from "../data/products.json";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   FaArrowLeft,
-  FaStar,
-  FaTag,
   FaBolt,
   FaHeart,
   FaRegHeart,
   FaShoppingCart,
+  FaStar,
+  FaTag,
 } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
+import toast from "react-hot-toast";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import toast from "react-hot-toast";
-import useShopStore from "../store/useShopStore";
 import { Button } from "../components/ui/button";
+import useShopStore from "../store/useShopStore";
 import { Product } from "../types/shop";
 import { toIconComponent } from "../utils/icons";
+import { fetchProductById } from "../api/products";
 
 const ArrowLeftIcon = toIconComponent(FaArrowLeft);
 const StarIcon = toIconComponent(FaStar);
@@ -32,10 +33,12 @@ const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const productId = Number(id);
-  const products = productsData as Product[];
-  const product = products.find((p) =>
-    Number.isNaN(productId) ? false : p.id === productId,
-  );
+
+  const { data, isLoading, isError } = useQuery<Product, Error>({
+    queryKey: ["product", id],
+    queryFn: () => fetchProductById(productId),
+    enabled: !Number.isNaN(productId),
+  });
 
   const wishlist = useShopStore((state) => state.wishlist) as Product[];
   const toggleWishlist = useShopStore((state) => state.toggleWishlist) as (
@@ -46,20 +49,20 @@ const ProductDetails: React.FC = () => {
   ) => void;
 
   const handleWishlist = useCallback(() => {
-    if (product) {
-      toggleWishlist(product);
+    if (data) {
+      toggleWishlist(data);
     }
-  }, [product, toggleWishlist]);
+  }, [data, toggleWishlist]);
 
   const handleShare = useCallback(async () => {
-    if (!product) {
+    if (!data) {
       return;
     }
 
-    const productUrl = `${window.location.origin}/product/${product.id}`;
+    const productUrl = `${window.location.origin}/product/${data.id}`;
     const shareData = {
-      title: product.name,
-      text: `Check out ${product.name} at ShopZone!`,
+      title: data.name,
+      text: `Check out ${data.name} at ShopZone!`,
       url: productUrl,
     };
 
@@ -73,15 +76,23 @@ const ProductDetails: React.FC = () => {
       await navigator.clipboard.writeText(productUrl);
       toast.success("Product link copied to clipboard!");
     }
-  }, [product]);
+  }, [data]);
 
   const handleAddToCart = useCallback(() => {
-    if (product) {
-      addToCart(product);
+    if (data) {
+      addToCart(data);
     }
-  }, [addToCart, product]);
+  }, [addToCart, data]);
 
-  if (!product) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+        Loading product...
+      </div>
+    );
+  }
+
+  if (isError || !data) {
     return (
       <div className="min-h-screen bg-background text-foreground flex flex-col">
         <Header />
@@ -101,20 +112,19 @@ const ProductDetails: React.FC = () => {
     );
   }
 
-  const originalPrice =
-    product.originalPrice || Math.round(product.price * 1.35);
+  const originalPrice = data.originalPrice || Math.round(data.price * 1.35);
   const discount = Math.round(
-    ((originalPrice - product.price) / originalPrice) * 100,
+    ((originalPrice - data.price) / originalPrice) * 100,
   );
 
-  const rating = product.rating || 4.3;
-  const ratingsCount = product.ratingsCount
-    ? product.ratingsCount.toLocaleString()
+  const rating = data.rating || 4.3;
+  const ratingsCount = data.ratingsCount
+    ? data.ratingsCount.toLocaleString()
     : "8,543";
-  const reviewsCount = product.reviewsCount
-    ? product.reviewsCount.toLocaleString()
+  const reviewsCount = data.reviewsCount
+    ? data.reviewsCount.toLocaleString()
     : "854";
-  const isWishlisted = wishlist.some((item) => item.id === product.id);
+  const isWishlisted = wishlist.some((item) => item.id === data.id);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -136,11 +146,11 @@ const ProductDetails: React.FC = () => {
             <div className="flex-1 w-full flex items-center justify-center py-6 md:py-10">
               <img
                 src={
-                  product.image?.startsWith("/")
-                    ? process.env.PUBLIC_URL + product.image
-                    : product.image
+                  data.image?.startsWith("/")
+                    ? process.env.PUBLIC_URL + data.image
+                    : data.image
                 }
-                alt={product.name}
+                alt={data.name}
                 className="max-w-full max-h-[420px] object-contain hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -181,7 +191,7 @@ const ProductDetails: React.FC = () => {
 
           <div className="w-full md:w-3/5 p-4 md:p-8">
             <h1 className="text-lg md:text-xl font-medium text-foreground mb-2">
-              {product.name}
+              {data.name}
             </h1>
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-purple-600 text-white px-1.5 py-0.5 rounded-sm text-xs font-bold flex items-center">
@@ -198,7 +208,7 @@ const ProductDetails: React.FC = () => {
               </span>
               <div className="flex items-baseline gap-3 mt-1">
                 <span className="text-3xl font-medium text-foreground">
-                  ₹{product.price}
+                  ₹{data.price}
                 </span>
                 <span className="text-muted-foreground line-through text-base">
                   ₹{originalPrice}
@@ -243,7 +253,7 @@ const ProductDetails: React.FC = () => {
                   Description
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  {product.description}
+                  {data.description}
                 </p>
               </div>
               <div>
@@ -254,13 +264,13 @@ const ProductDetails: React.FC = () => {
                   <span className="bg-background px-4 py-2 rounded-2xl border border-border shadow-sm text-foreground dark:bg-card">
                     Color:{" "}
                     <span className="font-bold text-purple-700 dark:text-purple-300">
-                      {product.color}
+                      {data.color}
                     </span>
                   </span>
                   <span className="bg-background px-4 py-2 rounded-2xl border border-border shadow-sm text-foreground dark:bg-card">
                     Size:{" "}
                     <span className="font-bold text-purple-700 dark:text-purple-300">
-                      {product.size}
+                      {data.size}
                     </span>
                   </span>
                 </div>

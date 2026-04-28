@@ -43,7 +43,7 @@ const Login: React.FC = () => {
   const loginUser = useAuthStore((state) => state.loginUser) as (
     email: string,
     password: string,
-  ) => AuthActionResult;
+  ) => Promise<AuthActionResult>;
 
   const {
     register,
@@ -58,9 +58,7 @@ const Login: React.FC = () => {
   const emailField = register("email");
   const passwordField = register("password");
   const onSubmit = async (data: LoginFormValues) => {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    const result = loginUser(data.email, data.password);
+    const result = await loginUser(data.email, data.password);
 
     if (!result.success) {
       toast.error(result.message);
